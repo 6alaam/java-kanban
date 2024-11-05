@@ -1,14 +1,26 @@
 package resources;
 
 public class Subtask extends Task {
-    private int epicId;
+    private final int epicID;
 
-    public Subtask(int id, String title, String description, Status status, int epicId) {
-        super(id, title, description, status);
-        this.epicId = epicId;
+    public Subtask(int id, String name, String description, Status status, int epicID) {
+        super(id, name, description, status);
+        this.epicID = epicID;
     }
 
-    public int getEpicId() {
-        return epicId;
+
+    public Subtask(int id, String name, String description, Status status, int epicID) {
+        super(id, name, description, status);
+        this.epicID = epicID;
+    }
+    public int getEpicID() {
+        return epicID;
+    }
+
+    @Override
+    public String toString() {
+        return "Subtask{" +
+                "epicID=" + epicID +
+                "} " + super.toString();
     }
 }
