@@ -1,86 +1,79 @@
 
 package manager;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import enums.Status;
-import task.Epic;
-import task.Subtask;
-import task.Task;
 
+import manage.*;
+import resources.*;
+
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    private static TaskManager taskManager;
+    public class InMemoryHistoryManagerTest {
+        private static final HistoryManager historyManager = Manager.getDefaultHistory();
+        private static Task task1;
+        private static Task task2;
+        private static Epic task3;
+        private static Subtask task4;
+        private static Subtask task5;
+        private static int testId = 1000;
 
-    @BeforeEach
-    public void beforeEach() {
-        taskManager = Managers.getDefault();
-    }
-
-    @Test
-    public void getHistoryShouldReturnListOf10Tasks() {
-        for (int i = 0; i < 20; i++) {
-            taskManager.addTask(new Task("Some name", "Some description"));
+        @BeforeAll
+        static void createTasks() {
+            task1 = new Task("New Task1", "Test description 1");
+            task1.setId(testId++);
+            task2 = new Task("New Task1", "Test description 1");
+            task2.setId(testId++);
+            task3 = new Epic("New Task1", "Test description 1");
+            task3.setId(testId++);
+            task4 = new Subtask(testId,"New Task1", "Test description 1", Status.NEW, task3.getId());
+            task4.setId(testId++);
+            task3.addSubtask(task4.getId());
+            task5 = new Subtask("New Task1", "Test description 1", Status.NEW, task3.getId());
+            task5.setId(testId++);
+            task3.addSubtask(task5.getId());
         }
 
-        List<Task> tasks = taskManager.getTasks();
-        for (Task task : tasks) {
-            taskManager.getTaskByID(task.getId());
+        @Test
+        void add() {
+            historyManager.add(task1);
+            List<Task> history = historyManager.getHistory();
+            assertNotNull(history, "История пустая.");
+            assertEquals(1, history.size(), "История не добавляется.");
+            historyManager.add(task3);
+            historyManager.add(task5);
+            historyManager.add(task2);
+            history = historyManager.getHistory();
+            assertEquals(4, history.size(), "История не добавляется.");
         }
 
-        List<Task> list = taskManager.getHistory();
-        assertEquals(10, list.size(), "Неверное количество элементов в истории ");
-    }
+        @Test
+        void addTheSameTaskThreeTimes() {
+            historyManager.add(task1);
+            historyManager.add(task1);
+            historyManager.add(task1);
+            List<Task> history = historyManager.getHistory();
+            assertEquals(1, history.size(), "История той же задачи не перезаписалась.");
+        }
 
-    @Test
-    public void getHistoryShouldReturnOldTaskAfterUpdate() {
-        Task washFloor = new Task("Помыть полы", "С новым средством");
-        taskManager.addTask(washFloor);
-        taskManager.getTaskByID(washFloor.getId());
-        taskManager.updateTask(new Task(washFloor.getId(), "Не забыть помыть полы",
-                "Можно и без средства", Status.IN_PROGRESS));
-        List<Task> tasks = taskManager.getHistory();
-        Task oldTask = tasks.getFirst();
-        assertEquals(washFloor.getName(), oldTask.getName(), "В истории не сохранилась старая версия задачи");
-        assertEquals(washFloor.getDescription(), oldTask.getDescription(),
-                "В истории не сохранилась старая версия задачи");
+        @Test
+        void displayInTheOrderTaskWasAdded() {
+            historyManager.add(task1);
+            historyManager.add(task3);
+            historyManager.add(task5);
+            historyManager.add(task2);
+            historyManager.add(task4);
+            historyManager.add(task1);
+            List<Task> listForTest = Arrays.asList(task3, task5, task2, task4, task1);
+            assertArrayEquals(listForTest.toArray(), historyManager.getHistory().toArray(), "Просмотренные задачи не совпадают");
+        }
 
-    }
 
-    @Test
-    public void getHistoryShouldReturnOldEpicAfterUpdate() {
-        Epic flatRenovation = new Epic("Сделать ремонт", "Нужно успеть за отпуск");
-        taskManager.addEpic(flatRenovation);
-        taskManager.getEpicByID(flatRenovation.getId());
-        taskManager.updateEpic(new Epic(flatRenovation.getId(), "Новое имя", "новое описание",
-                Status.IN_PROGRESS));
-        List<Task> epics = taskManager.getHistory();
-        Epic oldEpic = (Epic) epics.getFirst();
-        assertEquals(flatRenovation.getName(), oldEpic.getName(),
-                "В истории не сохранилась старая версия эпика");
-        assertEquals(flatRenovation.getDescription(), oldEpic.getDescription(),
-                "В истории не сохранилась старая версия эпика");
-    }
-
-    @Test
-    public void getHistoryShouldReturnOldSubtaskAfterUpdate() {
-        Epic flatRenovation = new Epic("Сделать ремонт", "Нужно успеть за отпуск");
-        taskManager.addEpic(flatRenovation);
-        Subtask flatRenovationSubtask3 = new Subtask("Заказать книжный шкаф", "Из темного дерева",
-                flatRenovation.getId());
-        taskManager.addSubtask(flatRenovationSubtask3);
-        taskManager.getSubtaskByID(flatRenovationSubtask3.getId());
-        taskManager.updateSubtask(new Subtask(flatRenovationSubtask3.getId(), "Новое имя",
-                "новое описание", Status.IN_PROGRESS, flatRenovation.getId()));
-        List<Task> subtasks = taskManager.getHistory();
-        Subtask oldSubtask = (Subtask) subtasks.getFirst();
-        assertEquals(flatRenovationSubtask3.getName(), oldSubtask.getName(),
-                "В истории не сохранилась старая версия эпика");
-        assertEquals(flatRenovationSubtask3.getDescription(), oldSubtask.getDescription(),
-                "В истории не сохранилась старая версия эпика");
     }
 }
