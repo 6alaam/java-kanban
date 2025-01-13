@@ -1,10 +1,9 @@
 package resources;
 
-import java.util.Objects;
-
-    private int id;
+public class Task {
     private String name;
     private String description;
+    private int id;
     private Status status;
 
     public Task(int id, String name, String description, Status status) {
@@ -20,39 +19,48 @@ import java.util.Objects;
         this.status = Status.NEW;
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
+    public Task(int id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+
+    public int getId() {
+        return id;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Status getStatus() {
         return status;
     }
+
     public void setStatus(Status status) {
         this.status = status;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Task task = (Task) o;
         return id == task.id;
     }
@@ -61,13 +69,12 @@ import java.util.Objects;
     public int hashCode() {
         return id;
     }
-    // переопределил для тестов
 
     @Override
-        public String toString() {
+    public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "description='" + description + '\'' +
+                ", name='" + name + '\'' +
                 ", id=" + id +
                 ", status=" + status +
                 '}';

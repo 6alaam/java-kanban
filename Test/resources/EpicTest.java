@@ -1,9 +1,10 @@
-package task;
+package test.resources;
 
 import org.junit.jupiter.api.Test;
-import enums.Status;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import resources.*;
+
 
 class EpicTest {
 
