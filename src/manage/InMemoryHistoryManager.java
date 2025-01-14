@@ -1,13 +1,16 @@
 package manage;
 
-import resources.*;
+import resources.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
-    private final HashMap<Integer, Node> historyList = new HashMap<>();
+    private final Map<Integer, Node> historyList = new HashMap<>();
 
 
     @Override
@@ -26,6 +29,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(nodeToRemove);
         }
     }
+
     @Override
     public List<Task> getHistory() {
         return getTasks();

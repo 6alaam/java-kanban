@@ -3,9 +3,13 @@ package manage;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import resources.*;
-import manage.*;
+import resources.Epic;
+import resources.Status;
+import resources.Subtask;
+import resources.Task;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest {
@@ -121,17 +125,16 @@ public class InMemoryTaskManagerTest {
         assertEquals(flatRenovation, savedEpic, "Эпики не совпадают.");
         assertEquals(flatRenovationSubtask1, savedSubtask1, "Подзадачи не совпадают.");
         assertEquals(flatRenovationSubtask3, savedSubtask3, "Подзадачи не совпадают.");
-
         final List<Epic> epics = taskManager.getAllEpic();
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(flatRenovation, epics.getFirst(), "Эпики не совпадают.");
-
         final List<Subtask> subtasks = taskManager.getAllSubtask();
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(3, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(savedSubtask1, subtasks.getFirst(), "Подзадачи не совпадают.");
     }
+
     @Test
     public void updateTaskShouldReturnTaskWithTheSameId() {
         final Task expected = new Task("имя", "описание");
@@ -161,6 +164,7 @@ public class InMemoryTaskManagerTest {
         final Subtask actual = taskManager.updateSubtask(updatedSubtask);
         assertEquals(expected, actual, "Вернулась подзадача с другим id");
     }
+
     @Test
     public void deleteTasksShouldReturnEmptyList() {
         taskManager.addTask(new Task("Купить книги", "Список в заметках"));

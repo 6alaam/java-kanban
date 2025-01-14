@@ -1,5 +1,7 @@
 package manage;
-import resources.*;
+
+import resources.Task;
+
 public class Node {
 
     private Task task;

@@ -1,10 +1,9 @@
 package resources;
 
+import enums.Status;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import enums.Status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
 

@@ -1,11 +1,9 @@
 package manage;
 
-import resources.Task;
 import resources.Epic;
 import resources.Status;
 import resources.Subtask;
-
-
+import resources.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +50,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         tasks.clear();
     }
-
 
 
     @Override
@@ -126,6 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.put(epic.getId(), epic);
         return epic;
     }
+
     @Override
     public Task updateTask(Task task) {
         tasks.put(task.getId(), task);
@@ -180,6 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(epic);
         return deletedSubtask;
     }
+
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();

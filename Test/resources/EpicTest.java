@@ -1,9 +1,10 @@
 package test.resources;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import resources.Epic;
+import resources.Status;
 
-import resources.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class EpicTest {
