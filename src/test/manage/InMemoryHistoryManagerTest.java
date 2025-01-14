@@ -1,7 +1,7 @@
 package test.manage;
 
-import manage.Manager;
-import manage.TaskManager;
+import manage.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import resources.Epic;
