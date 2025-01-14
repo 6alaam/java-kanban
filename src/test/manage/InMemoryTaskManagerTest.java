@@ -109,7 +109,7 @@ public class InMemoryTaskManagerTest {
 
 
     @Test
-    public void updateTaskShouldReturnTaskWithTheSameId() {
+    public void updateTaskShouldReturnTaskWithTheSameId2() {
         final Task expected = new Task("имя", "описание");
         taskManager.addTask(expected);
         final Task updatedTask = new Task(expected.getId(), "новое имя", "новое описание", Status.DONE);
@@ -148,7 +148,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteEpicsShouldReturnEmptyList() {
+    public void deleteEpicsShouldReturnEmptyList2() {
         taskManager.addEpic(new Epic("Сделать ремонт", "Нужно успеть за отпуск"));
         taskManager.deleteAllEpic();
         List<Epic> epics = taskManager.getAllEpic();
