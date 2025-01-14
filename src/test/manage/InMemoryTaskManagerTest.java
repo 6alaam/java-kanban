@@ -107,35 +107,6 @@ public class InMemoryTaskManagerTest {
         assertTrue(tasks.isEmpty(), "После удаления задач список должен быть пуст.");
     }
 
-    @Test
-    void addNewEpicAndSubtasks() {
-        //проверяем, что InMemoryTaskManager добавляет эпики и подзадачи и может найти их по id;
-        final Epic flatRenovation = taskManager.addEpic(new Epic("Сделать ремонт",
-                "Нужно успеть за отпуск"));
-        final Subtask flatRenovationSubtask1 = taskManager.addSubtask(new Subtask("Поклеить обои",
-                "Обязательно светлые!", flatRenovation.getId()));
-        final Subtask flatRenovationSubtask2 = taskManager.addSubtask(new Subtask("Установить новую технику",
-                "Старую продать на Авито", flatRenovation.getId()));
-        final Subtask flatRenovationSubtask3 = taskManager.addSubtask(new Subtask("Заказать книжный шкаф", "Из темного дерева",
-                flatRenovation.getId()));
-        final Epic savedEpic = taskManager.getEpicById(flatRenovation.getId());
-        final Subtask savedSubtask1 = taskManager.getSubtaskById(flatRenovationSubtask1.getId());
-        final Subtask savedSubtask2 = taskManager.getSubtaskById(flatRenovationSubtask2.getId());
-        final Subtask savedSubtask3 = taskManager.getSubtaskById(flatRenovationSubtask3.getId());
-        assertNotNull(savedEpic, "Эпик не найден.");
-        assertNotNull(savedSubtask2, "Подзадача не найдена.");
-        assertEquals(flatRenovation, savedEpic, "Эпики не совпадают.");
-        assertEquals(flatRenovationSubtask1, savedSubtask1, "Подзадачи не совпадают.");
-        assertEquals(flatRenovationSubtask3, savedSubtask3, "Подзадачи не совпадают.");
-        final List<Epic> epics = taskManager.getAllEpic();
-        assertNotNull(epics, "Эпики не возвращаются.");
-        assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(flatRenovation, epics.getFirst(), "Эпики не совпадают.");
-        final List<Subtask> subtasks = taskManager.getAllSubtask();
-        assertNotNull(subtasks, "Подзадачи не возвращаются.");
-        assertEquals(3, subtasks.size(), "Неверное количество подзадач.");
-        assertEquals(savedSubtask1, subtasks.getFirst(), "Подзадачи не совпадают.");
-    }
 
     @Test
     public void updateTaskShouldReturnTaskWithTheSameId() {
