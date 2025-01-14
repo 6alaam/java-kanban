@@ -1,4 +1,4 @@
-package Test.resources;
+package test.resources;
 
 import enums.Status;
 import org.junit.jupiter.api.Test;

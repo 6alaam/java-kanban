@@ -1,4 +1,4 @@
-package Test.resources;
+package test.resources;
 
 import org.junit.jupiter.api.Test;
 import resources.Status;
