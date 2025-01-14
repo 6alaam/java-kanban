@@ -139,7 +139,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteTasksShouldReturnEmptyList() {
+    public void deleteTasksShouldReturnEmptyList3() {
         taskManager.addTask(new Task("Купить книги", "Список в заметках"));
         taskManager.addTask(new Task("Помыть полы", "С новым средством"));
         taskManager.deleteAllTask();
