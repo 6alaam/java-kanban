@@ -118,7 +118,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateEpicShouldReturnEpicWithTheSameId() {
+    public void updateEpicShouldReturnEpicWithTheSameId2() {
         final Epic expected = new Epic("имя", "описание");
         taskManager.addEpic(expected);
         final Epic updatedEpic = new Epic(expected.getId(), "новое имя", "новое описание", Status.DONE);
@@ -127,7 +127,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateSubtaskShouldReturnSubtaskWithTheSameId() {
+    public void updateSubtaskShouldReturnSubtaskWithTheSameId3() {
         final Epic epic = new Epic("имя", "описание");
         taskManager.addEpic(epic);
         final Subtask expected = new Subtask("имя", "описание", epic.getId());
