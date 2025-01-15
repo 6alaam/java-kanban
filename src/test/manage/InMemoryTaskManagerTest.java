@@ -138,7 +138,6 @@ public class InMemoryTaskManagerTest {
         assertEquals(expected, actual, "Вернулась подзадача с другим id");
     }
 
-// послепереименования данного теста гитхаб снова перестал видеть папку с тестами
     @Test
     public void deleteTasksShouldReturnEmptyList3() {
         taskManager.addTask(new Task("Купить книги", "Список в заметках"));
