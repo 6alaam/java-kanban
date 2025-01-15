@@ -5,6 +5,6 @@ import resources.*;
 public class Main {
     public static void main(String[] args) {
 
-// фпуфпп
+// заменил папку
     }
 }
