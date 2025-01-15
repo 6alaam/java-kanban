@@ -5,7 +5,6 @@ import resources.*;
 public class Main {
     public static void main(String[] args) {
 
-// для комита
-
+// фпуфпп
     }
 }
