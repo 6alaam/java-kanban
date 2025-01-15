@@ -1,9 +1,8 @@
-package manage;
+package service;
 
-import resources.Task;
+import model.*;
 
 public class Node {
-
     private Task task;
     private Node prev;
     private Node next;
@@ -36,4 +35,3 @@ public class Node {
         this.task = task;
     }
 }
-

@@ -1,12 +1,9 @@
-package test.resources;
-
+package test.model;
+import model.*;
 import org.junit.jupiter.api.Test;
-import resources.Status;
-import resources.Subtask;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class SubtaskTest {
+public class SubtaskTest {
 
     @Test
     public void subtasksWithEqualIdShouldBeEqual() {

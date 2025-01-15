@@ -1,29 +1,25 @@
-package test.manage;
+package test.service;
 
-import manage.*;
-
+import model.*;
+import service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import resources.Epic;
-import resources.Status;
-import resources.Subtask;
-import resources.Task;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InMemoryHistoryManagerTest {
+import java.util.List;
 
+public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
     private static InMemoryHistoryManager historyManager;
 
     @BeforeEach
     public void beforeEach() {
-        historyManager = Manager.getDefaultHistory();
-        taskManager = Manager.getDefault();
+        historyManager = Managers.getDefaultHistory();
+        taskManager = Managers.getDefault();
     }
+
 
     @Test
     public void getHistoryShouldReturnOldTaskAfterUpdate() {
@@ -151,4 +147,5 @@ public class InMemoryHistoryManagerTest {
         assertTrue(history.contains(task3));
         assertFalse(history.contains(task2)); // task2 должен быть удален
     }
+
 }

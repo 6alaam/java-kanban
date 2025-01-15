@@ -1,25 +1,19 @@
+package test.service;
 
-package test.manage;
-
-import manage.Manager;
-import manage.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import resources.Epic;
-import resources.Status;
-import resources.Subtask;
-import resources.Task;
-
+import static org.junit.jupiter.api.Assertions.*;
+import model.*;
+import service.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class InMemoryTaskManagerTest {
+
     private static TaskManager taskManager;
 
     @BeforeEach
     public void beforeEach() {
-        taskManager = Manager.getDefault();
+        taskManager = Managers.getDefault();
     }
 
     @Test
@@ -107,48 +101,8 @@ public class InMemoryTaskManagerTest {
         assertTrue(tasks.isEmpty(), "После удаления задач список должен быть пуст.");
     }
 
-
     @Test
-    public void updateTaskShouldReturnTaskWithTheSameId2() {
-        final Task expected = new Task("имя", "описание");
-        taskManager.addTask(expected);
-        final Task updatedTask = new Task(expected.getId(), "новое имя", "новое описание", Status.DONE);
-        final Task actual = taskManager.updateTask(updatedTask);
-        assertEquals(expected, actual, "Вернулась задачи с другим id");
-    }
-
-    @Test
-    public void updateEpicShouldReturnEpicWithTheSameId2() {
-        final Epic expected = new Epic("имя", "описание");
-        taskManager.addEpic(expected);
-        final Epic updatedEpic = new Epic(expected.getId(), "новое имя", "новое описание", Status.DONE);
-        final Epic actual = taskManager.updateEpic(updatedEpic);
-        assertEquals(expected, actual, "Вернулся эпик с другим id");
-    }
-
-    @Test
-    public void updateSubtaskShouldReturnSubtaskWithTheSameId3() {
-        final Epic epic = new Epic("имя", "описание");
-        taskManager.addEpic(epic);
-        final Subtask expected = new Subtask("имя", "описание", epic.getId());
-        taskManager.addSubtask(expected);
-        final Subtask updatedSubtask = new Subtask(expected.getId(), "новое имя", "новое описание",
-                Status.DONE, epic.getId());
-        final Subtask actual = taskManager.updateSubtask(updatedSubtask);
-        assertEquals(expected, actual, "Вернулась подзадача с другим id");
-    }
-
-    @Test
-    public void deleteTasksShouldReturnEmptyList3() {
-        taskManager.addTask(new Task("Купить книги", "Список в заметках"));
-        taskManager.addTask(new Task("Помыть полы", "С новым средством"));
-        taskManager.deleteAllTask();
-        List<Task> tasks = taskManager.getAllTasks();
-        assertTrue(tasks.isEmpty(), "После удаления задач список должен быть пуст.");
-    }
-
-    @Test
-    public void deleteEpicsShouldReturnEmptyList2() {
+    public void deleteEpicsShouldReturnEmptyList() {
         taskManager.addEpic(new Epic("Сделать ремонт", "Нужно успеть за отпуск"));
         taskManager.deleteAllEpic();
         List<Epic> epics = taskManager.getAllEpic();
