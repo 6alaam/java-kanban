@@ -8,6 +8,5 @@ public interface Managers {
     // по первому методу ообщее вопрос, это осколок от прошлого тз ,сейчас оно есть только в тестах, смысла в этом методе не
 
 
-
-    InMemoryHistoryManager getDefaultHistory() ;
+    InMemoryHistoryManager getDefaultHistory();
 }

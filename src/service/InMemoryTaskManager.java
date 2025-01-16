@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 
-public class InMemoryTaskManager implements TaskManager,Managers {
+public class InMemoryTaskManager implements TaskManager, Managers {
 
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyManager ;
+    private final HistoryManager historyManager;
 
     private int nextId = 1;
 
@@ -29,7 +29,7 @@ public class InMemoryTaskManager implements TaskManager,Managers {
     }
 
     @Override
-    public  InMemoryHistoryManager getDefaultHistory() {
+    public InMemoryHistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 

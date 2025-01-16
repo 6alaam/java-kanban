@@ -1,15 +1,18 @@
 package test.service;
 
-import model.*;
-import service.*;
-
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import service.InMemoryHistoryManager;
+import service.TaskManager;
 
 import java.util.List;
 
-public class InMemoryHistoryManagerTest  {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
     private static InMemoryHistoryManager historyManager;
@@ -148,9 +151,9 @@ public class InMemoryHistoryManagerTest  {
         assertFalse(history.contains(task2)); // task2 должен быть удален
     }
 
-
-    @Override
-    public  InMemoryHistoryManager getDefaultHistory() {
-        return new InMemoryHistoryManager();
-    }
+//
+//    @Override
+//    public InMemoryHistoryManager getDefaultHistory() {
+//        return new InMemoryHistoryManager();
+//    }
 }
