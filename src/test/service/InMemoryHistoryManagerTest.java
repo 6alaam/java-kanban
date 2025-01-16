@@ -9,16 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-public class InMemoryHistoryManagerTest {
+public class InMemoryHistoryManagerTest implements Managers {
 
     private static TaskManager taskManager;
     private static InMemoryHistoryManager historyManager;
 
-    @BeforeEach
-    public void beforeEach() {
-        historyManager = Managers.getDefaultHistory();
-  //      taskManager = Managers.getDefault();
-    }
+//    @BeforeEach
+//    public void beforeEach() {
+//        historyManager = Managers.getDefaultHistory();
+//        taskManager = Managers.getDefault();
+//    }
 
 
     @Test
@@ -148,4 +148,9 @@ public class InMemoryHistoryManagerTest {
         assertFalse(history.contains(task2)); // task2 должен быть удален
     }
 
+
+    @Override
+    public  InMemoryHistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
+    }
 }
