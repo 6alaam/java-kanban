@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-public class InMemoryHistoryManagerTest implements Managers {
+public class InMemoryHistoryManagerTest  {
 
     private static TaskManager taskManager;
     private static InMemoryHistoryManager historyManager;
