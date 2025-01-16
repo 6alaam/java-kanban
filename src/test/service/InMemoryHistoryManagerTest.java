@@ -1,27 +1,24 @@
 package test.service;
 
-import model.Epic;
-import model.Status;
-import model.Subtask;
-import model.Task;
+import model.*;
+import service.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.InMemoryHistoryManager;
-import service.TaskManager;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
 
 public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
     private static InMemoryHistoryManager historyManager;
 
-//    @BeforeEach
-//    public void beforeEach() {
-//        historyManager = Managers.getDefaultHistory();
-//        taskManager = Managers.getDefault();
-//    }
+    @BeforeEach
+    public void beforeEach() {
+        historyManager = Managers.getDefaultHistory();
+        taskManager = Managers.getDefault();
+    }
 
 
     @Test
@@ -151,9 +148,4 @@ public class InMemoryHistoryManagerTest {
         assertFalse(history.contains(task2)); // task2 должен быть удален
     }
 
-//
-//    @Override
-//    public InMemoryHistoryManager getDefaultHistory() {
-//        return new InMemoryHistoryManager();
-//    }
 }
