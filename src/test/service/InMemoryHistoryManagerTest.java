@@ -12,11 +12,11 @@ import java.util.List;
 public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
-    private static   InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
+    private static HistoryManager historyManager;
 
     @BeforeEach
     public void beforeEach() {
-        InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
+        historyManager = Managers.getDefaultHistory();
         taskManager = Managers.getDefault();
     }
 
