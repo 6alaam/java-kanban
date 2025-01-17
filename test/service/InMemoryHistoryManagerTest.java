@@ -9,14 +9,13 @@ import java.util.List;
 public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
-    private static InMemoryHistoryManager historyManager;
+    private static   InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
 
     @BeforeEach
     public void beforeEach() {
-        historyManager = Managers.getDefaultHistory();
+        InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
         taskManager = Managers.getDefault();
     }
-
 
     @Test
     public void getHistoryShouldReturnOldTaskAfterUpdate() {
