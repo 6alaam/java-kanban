@@ -12,7 +12,7 @@ import java.util.List;
 public class InMemoryHistoryManagerTest {
 
     private static TaskManager taskManager;
-    private static HistoryManager historyManager;
+    InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
 
     @BeforeEach
     public void beforeEach() {
