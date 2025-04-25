@@ -55,7 +55,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка загрузки задачи из файла", e);
+            throw new ManagerLoadException("Ошибка загрузки задачи из файла", e);
         }
         return manager;
     }
