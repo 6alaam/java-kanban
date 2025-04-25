@@ -30,7 +30,7 @@ class FileBackedTaskManagerTest {
         List<Task> loadedTasks = loaded.getAllTasks();
 
         assertEquals(1, loadedTasks.size(), "Должна быть одна загруженная задача");
-        assertEquals("Test", loadedTasks.get(0).getName(), "Имя задачи должно совпадать");
+        assertEquals("Test", loadedTasks.getFirst().getName(), "Имя задачи должно совпадать");
     }
 
     @Test
