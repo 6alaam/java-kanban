@@ -2,15 +2,13 @@ package test.service;
 
 
 import model.Task;
-
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileBackedTaskManagerTest {
     @Test
@@ -22,7 +20,6 @@ class FileBackedTaskManagerTest {
 
         assertTrue(file.exists(), "Файл должен быть создан после сохранения задачи");
     }
-
 
 
     @Test

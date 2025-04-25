@@ -6,8 +6,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static model.TaskType.TASK;
-
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
@@ -58,9 +56,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         return manager;
     }
-
-
-
 
 
     private static Task fromString(String value) {
