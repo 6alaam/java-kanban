@@ -1,13 +1,12 @@
 package service;
 
-import model.Epic;
-import model.Status;
-import model.Subtask;
-import model.Task;
+import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static model.TaskType.TASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -61,43 +60,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
-    // Метод toString(Task task)
-    private String toString(Task task) {
-        String type = "TASK";
-        if (task instanceof Epic) {
-            type = "EPIC";
-        } else if (task instanceof Subtask) {
-            type = "SUBTASK";
-        }
-        return String.format("%d,%s,%s,%s,%s,%d",
-                task.getId(),
-                type,
-                task.getName(),
-                task.getStatus(),
-                task.getDescription(),
-                task instanceof Subtask ? ((Subtask) task).getEpicID() : 0);
-    }
 
-    // Метод fromString(String value)
+
+
     private static Task fromString(String value) {
         String[] parts = value.split(",");
         int id = Integer.parseInt(parts[0]);
-        String type = parts[1];
+        TaskType type = TaskType.valueOf(parts[1]);
         String name = parts[2];
         Status status = Status.valueOf(parts[3]);
         String description = parts[4];
-        int epicId = parts.length > 5 ? Integer.parseInt(parts[5]) : 0;
 
+        Task task;
         switch (type) {
-            case "TASK":
-                return new Task(id, name, description, status);
-            case "EPIC":
-                return new Epic(id, name, description, status);
-            case "SUBTASK":
-                return new Subtask(id, name, description, status, epicId);
+            case TASK:
+                task = new Task(name, description);
+                break;
+            case EPIC:
+                task = new Epic(name, description);
+                break;
+            case SUBTASK:
+                int epicId = Integer.parseInt(parts[5]);
+                task = new Subtask(name, description, epicId);
+                break;
             default:
-                throw new IllegalArgumentException("Неизвестный типа задачи: " + type);
+                throw new IllegalArgumentException("Unknown task type");
         }
+        task.setId(id);
+        task.setStatus(status);
+        return task;
     }
 
 
