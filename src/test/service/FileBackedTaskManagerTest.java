@@ -2,15 +2,14 @@ package test.service;
 
 
 import model.Task;
-
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class FileBackedTaskManagerTest {
     @Test
@@ -23,15 +22,6 @@ class FileBackedTaskManagerTest {
         assertTrue(file.exists(), "Файл должен быть создан после сохранения задачи");
     }
 
-//    @Test
-//    void shouldLoadSingleTaskFromFile() {
-//        File file = new File("test-save.csv");
-//        FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(file);
-//        List<Task> loadedTasks = loaded.getAllTasks();
-//
-//        assertEquals(1, loadedTasks.size(), "Должна быть одна загруженная задача");
-//        assertEquals("Test", loadedTasks.get(0).getName(), "Имя задачи должно совпадать");
-//    }
 
     @Test
     void shouldHandleEmptyFile() {
