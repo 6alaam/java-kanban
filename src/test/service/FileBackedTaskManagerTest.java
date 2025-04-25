@@ -35,11 +35,9 @@ class FileBackedTaskManagerTest {
     void addAndSaveTask() {
         Task task = new Task("Task 1", "Description 1");
         manager.addTask(task);
-
         List<Task> tasks = manager.getAllTasks();
         assertEquals(1, tasks.size());
         assertEquals(task, tasks.get(0));
-
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         tasks = manager.getAllTasks();
         assertEquals(1, tasks.size());
@@ -50,11 +48,9 @@ class FileBackedTaskManagerTest {
     void addAndSaveEpic() {
         Epic epic = new Epic("Epic 1", "Description 1");
         manager.addEpic(epic);
-
         List<Epic> epics = manager.getAllEpic();
         assertEquals(1, epics.size());
         assertEquals(epic, epics.get(0));
-
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         epics = manager.getAllEpic();
         assertEquals(1, epics.size());
@@ -63,16 +59,13 @@ class FileBackedTaskManagerTest {
 
     @Test
     void addAndSaveSubtask() {
-        Epic epic = new Epic("Epic 1", "Description 1");
+        Epic epic = new Epic(1,"Epic 1","Description 1",Status.NEW);
         manager.addEpic(epic);
-
-        Subtask subtask = new Subtask("Subtask 1", "Description 1", epic.getId());
+        Subtask subtask = new Subtask(2,"Subtask 1","Description 1",Status.NEW,epic.getId());
         manager.addSubtask(subtask);
-
         List<Subtask> subtasks = manager.getAllSubtask();
         assertEquals(1, subtasks.size());
         assertEquals(subtask, subtasks.get(0));
-
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         subtasks = manager.getAllSubtask();
         assertEquals(1, subtasks.size());
@@ -85,12 +78,10 @@ class FileBackedTaskManagerTest {
         Task task2 = new Task(2, "Task 2", "Description 2", Status.DONE);
         manager.addTask(task1);
         manager.addTask(task2);
-
         List<Task> tasks = manager.getAllTasks();
         assertEquals(2, tasks.size());
         assertTrue(tasks.contains(task1));
         assertTrue(tasks.contains(task2));
-
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         tasks = manager.getAllTasks();
         assertEquals(2, tasks.size());
@@ -110,10 +101,8 @@ class FileBackedTaskManagerTest {
         Task task = new Task(1, "Task 1", "Description 1", Status.NEW);
         manager.addTask(task);
         manager.deleteTaskByID(task.getId());
-
         List<Task> tasks = manager.getAllTasks();
         assertTrue(tasks.isEmpty());
-
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         tasks = manager.getAllTasks();
         assertTrue(tasks.isEmpty());
@@ -138,30 +127,19 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testSaveAndLoadAfterDeletingEpic() {
-        // Создаем эпик и добавляем его в менеджер
         Epic epic = new Epic(1, "Epic 1", "Description 1", Status.NEW);
         manager.addEpic(epic);
-
-        // Создаем подзадачу и добавляем ее в эпик
         Subtask subtask = new Subtask(2, "Subtask 1", "Description 1", Status.NEW, epic.getId());
         manager.addSubtask(subtask);
-
-        // Убедимся, что эпик и подзадача добавлены
         List<Epic> epics = manager.getAllEpic();
         List<Subtask> subtasks = manager.getAllSubtask();
         assertEquals(1, epics.size());
         assertEquals(1, subtasks.size());
-
-        // Удаляем эпик
         manager.deleteEpicByID(epic.getId());
-
-        // Проверяем, что эпик и подзадача удалены
         epics = manager.getAllEpic();
         subtasks = manager.getAllSubtask();
         assertTrue(epics.isEmpty());
         assertTrue(subtasks.isEmpty());
-
-        // Загружаем менеджер из файла и проверяем, что эпик и подзадача не сохранились
         manager = FileBackedTaskManager.loadFromFile(tempFile);
         epics = manager.getAllEpic();
         subtasks = manager.getAllSubtask();
