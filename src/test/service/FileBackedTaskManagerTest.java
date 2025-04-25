@@ -81,8 +81,8 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testSaveAndLoadMultipleTasks() {
-        Task task1 = new Task(1,"Task 1", "Description 1",Status.NEW);
-        Task task2 = new Task(2,"Task 2", "Description 2",Status.DONE);
+        Task task1 = new Task(1, "Task 1", "Description 1", Status.NEW);
+        Task task2 = new Task(2, "Task 2", "Description 2", Status.DONE);
         manager.addTask(task1);
         manager.addTask(task2);
 
@@ -107,7 +107,7 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testSaveAndLoadAfterDeletingTask() {
-        Task task = new Task(1,"Task 1", "Description 1", Status.NEW);
+        Task task = new Task(1, "Task 1", "Description 1", Status.NEW);
         manager.addTask(task);
         manager.deleteTaskByID(task.getId());
 
@@ -121,7 +121,7 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testSaveAndLoadAfterUpdatingTask() {
-        Task task = new Task(1,"Task 1", "Description 1", Status.NEW);
+        Task task = new Task(1, "Task 1", "Description 1", Status.NEW);
         manager.addTask(task);
         task.setDescription("Updated Description");
         manager.updateTask(task);
@@ -139,11 +139,11 @@ class FileBackedTaskManagerTest {
     @Test
     void testSaveAndLoadAfterDeletingEpic() {
         // Создаем эпик и добавляем его в менеджер
-        Epic epic = new Epic(1,"Epic 1", "Description 1", Status.NEW);
+        Epic epic = new Epic(1, "Epic 1", "Description 1", Status.NEW);
         manager.addEpic(epic);
 
         // Создаем подзадачу и добавляем ее в эпик
-        Subtask subtask = new Subtask(2,"Subtask 1", "Description 1",  Status.NEW, epic.getId());
+        Subtask subtask = new Subtask(2, "Subtask 1", "Description 1", Status.NEW, epic.getId());
         manager.addSubtask(subtask);
 
         // Убедимся, что эпик и подзадача добавлены

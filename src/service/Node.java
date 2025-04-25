@@ -1,6 +1,6 @@
 package service;
 
-import model.*;
+import model.Task;
 
 public class Node {
     private Task task;

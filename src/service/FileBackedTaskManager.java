@@ -18,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    private void save()  {
+    private void save() {
         try (Writer writer = new FileWriter(file, StandardCharsets.UTF_8)) {
             //  заголовок
             writer.write("id,type,name,status,description,epic\n");
@@ -90,9 +90,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         switch (type) {
             case "TASK":
-                return new Task(id,name,description,status);
+                return new Task(id, name, description, status);
             case "EPIC":
-                return new Epic(id,name,description,status);
+                return new Epic(id, name, description, status);
             case "SUBTASK":
                 return new Subtask(id, name, description, status, epicId);
             default:
