@@ -1,14 +1,12 @@
-package task;
-
+package test.model;
+import model.*;
 import org.junit.jupiter.api.Test;
-import enums.Status;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class EpicTest {
+public class EpicTest {
 
     @Test
-    public void EpicsWithEqualIdShouldBeEqual() {
+    public void epicsWithEqualIdShouldBeEqual() {
         Epic epic1 = new Epic(10, "Сделать ремонт", "Уложиться в 2 миллиона", Status.NEW);
         Epic epic2 = new Epic(10, "Подготовиться к собеседованию", "1 июля в 11:00",
                 Status.IN_PROGRESS);
