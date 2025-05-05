@@ -4,6 +4,9 @@ import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -143,4 +146,83 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public List<Task> getHistory() {
         return super.getHistory();
     }
+
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+    // Проверка пересечения двух задач (если у обеих заданы startTime и duration)
+    public boolean tasksIntersect(Task t1, Task t2) {
+        if (t1.getStartTime() == null || t1.getDuration() == null ||
+                t2.getStartTime() == null || t2.getDuration() == null) {
+            return false;
+        }
+        LocalDateTime start1 = t1.getStartTime();
+        LocalDateTime end1 = t1.getEndTime();
+        LocalDateTime start2 = t2.getStartTime();
+        LocalDateTime end2 = t2.getEndTime();
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
+
+
+    // При добавлении или обновлении проверяем, пересекается ли задача
+    public void checkIntersection(Task task) {
+        if (task.getStartTime() == null || task.getDuration() == null) {
+            return;
+        }
+        boolean intersect = getPrioritizedTasks().stream()
+                .filter(t -> t.getId() != task.getId())
+                .anyMatch(t -> tasksIntersect(task, t));
+        if (intersect) {
+            throw new RuntimeException("Task time intersects with another task: " + task);
+        }
+    }
+
+
+    // Пересчёт статуса и временных полей эпика на основе его подзадач
+    public void updateEpicStatus(Epic epic) {
+        List<Subtask> subtaskList = epic.getSubtaskList();
+        if (subtaskList.isEmpty()) {
+            epic.setStatus(Status.NEW);
+            epic.setStartTime(null);
+            epic.setDuration(null);
+            epic.setEndTime(null);
+            return;
+        }
+        boolean allNew = true;
+        boolean allDone = true;
+        LocalDateTime minStart = null;
+        LocalDateTime maxEnd = null;
+        Duration totalDuration = Duration.ZERO;
+        for (Subtask subtask : subtaskList) {
+            if (subtask.getStatus() != Status.NEW) {
+                allNew = false;
+            }
+            if (subtask.getStatus() != Status.DONE) {
+                allDone = false;
+            }
+            if (subtask.getStartTime() != null && subtask.getDuration() != null) {
+                LocalDateTime subStart = subtask.getStartTime();
+                LocalDateTime subEnd = subtask.getEndTime();
+                if (minStart == null || subStart.isBefore(minStart)) {
+                    minStart = subStart;
+                }
+                if (maxEnd == null || subEnd.isAfter(maxEnd)) {
+                    maxEnd = subEnd;
+                }
+                totalDuration = totalDuration.plus(subtask.getDuration());
+            }
+        }
+        if (allNew) {
+            epic.setStatus(Status.NEW);
+        } else if (allDone) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
+        }
+        epic.setStartTime(minStart);
+        epic.setDuration(totalDuration);
+        epic.setEndTime(maxEnd);
+    }
+
 }
