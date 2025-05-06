@@ -22,7 +22,7 @@ public class InMemoryHistoryManagerTest {
 
 
     @Test
-    public void getHistoryShouldReturnOldTaskAfterUpdate() {
+    public void getHistoryShouldReturnOldTaskAfterUpdate() throws TaskIntersectionException {
         Task washFloor = new Task("Написать проект", "Сдать в срок");
         taskManager.addTask(washFloor);
         taskManager.getTaskById(washFloor.getId());
@@ -52,7 +52,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getHistoryShouldReturnOldSubtaskAfterUpdate() {
+    public void getHistoryShouldReturnOldSubtaskAfterUpdate() throws TaskIntersectionException {
         Epic flatRenovation = new Epic("Новая задача", "Проверить");
         taskManager.addEpic(flatRenovation);
         Subtask flatRenovationSubtask3 = new Subtask("Заказать", "На озоне",
@@ -84,7 +84,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void testAddDuplicateTask() {
+    void testAddDuplicateTask() throws TaskIntersectionException {
         Task washFloor = new Task("Написать проект", "Сдать в срок");
         taskManager.addTask(washFloor);
         taskManager.getTaskById(washFloor.getId());
@@ -94,7 +94,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void testRemoveAllTask() {
+    void testRemoveAllTask() throws TaskIntersectionException {
         Task washFloor = new Task("Написать проект", "Сдать в срок");
         Task goToTeach = new Task("пойти в школу", "Учить информатику");
         Epic flatRenovation = new Epic("Новая задача", "Проверить");
