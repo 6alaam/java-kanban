@@ -29,7 +29,7 @@ public class InMemoryHistoryManagerTest {
             taskManager.updateTask(new Task(washFloor.getId(), "Отправить на ревью",
                     "Переписать половину", Status.IN_PROGRESS));
             List<Task> tasks = taskManager.getHistory();
-            Task oldTask = tasks.getFirst();
+            Task oldTask = tasks.get(0); // Изменено с getFirst() на get(0)
             assertEquals(washFloor.getName(), oldTask.getName(), "В истории не сохранилась старая версия задачи");
             assertEquals(washFloor.getDescription(), oldTask.getDescription(),
                     "В истории не сохранилась старая версия задачи");
@@ -40,17 +40,21 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void getHistoryShouldReturnOldEpicAfterUpdate() {
-        Epic flatRenovation = new Epic("Задача", "Разбитая на подзадачи");
-        taskManager.addEpic(flatRenovation);
-        taskManager.getEpicById(flatRenovation.getId());
-        taskManager.updateEpic(new Epic(flatRenovation.getId(), "Новое имя", "новое описание",
-                Status.IN_PROGRESS));
-        List<Task> epics = taskManager.getHistory();
-        Epic oldEpic = (Epic) epics.getFirst();
-        assertEquals(flatRenovation.getName(), oldEpic.getName(),
-                "В истории не сохранилась старая версия эпика");
-        assertEquals(flatRenovation.getDescription(), oldEpic.getDescription(),
-                "В истории не сохранилась старая версия эпика");
+        try {
+            Epic flatRenovation = new Epic("Задача", "Разбитая на подзадачи");
+            taskManager.addEpic(flatRenovation);
+            taskManager.getEpicById(flatRenovation.getId());
+            taskManager.updateEpic(new Epic(flatRenovation.getId(), "Новое имя", "новое описание",
+                    Status.IN_PROGRESS));
+            List<Task> epics = taskManager.getHistory();
+            Epic oldEpic = (Epic) epics.get(0); // Изменено с getFirst() на get(0)
+            assertEquals(flatRenovation.getName(), oldEpic.getName(),
+                    "В истории не сохранилась старая версия эпика");
+            assertEquals(flatRenovation.getDescription(), oldEpic.getDescription(),
+                    "В истории не сохранилась старая версия эпика");
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
@@ -65,7 +69,7 @@ public class InMemoryHistoryManagerTest {
             taskManager.updateSubtask(new Subtask(flatRenovationSubtask3.getId(), "Новое имя",
                     "новое описание", Status.IN_PROGRESS, flatRenovation.getId()));
             List<Task> subtasks = taskManager.getHistory();
-            Subtask oldSubtask = (Subtask) subtasks.getFirst();
+            Subtask oldSubtask = (Subtask) subtasks.get(0); // Изменено с getFirst() на get(0)
             assertEquals(flatRenovationSubtask3.getName(), oldSubtask.getName(),
                     "В истории не сохранилась старая версия подзадачи");
             assertEquals(flatRenovationSubtask3.getDescription(), oldSubtask.getDescription(),
@@ -77,16 +81,20 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     void testAddTask() {
-        Task task1 = new Task(1);
-        Task task2 = new Task(2);
+        try {
+            Task task1 = new Task(1);
+            Task task2 = new Task(2);
 
-        historyManager.add(task1);
-        historyManager.add(task2);
+            historyManager.add(task1);
+            historyManager.add(task2);
 
-        List<Task> history = historyManager.getHistory();
-        assertEquals(2, history.size());
-        assertTrue(history.contains(task1));
-        assertTrue(history.contains(task2));
+            List<Task> history = historyManager.getHistory();
+            assertEquals(2, history.size());
+            assertTrue(history.contains(task1));
+            assertTrue(history.contains(task2));
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
