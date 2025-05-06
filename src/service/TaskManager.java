@@ -27,17 +27,17 @@ public interface TaskManager {
 
     Subtask getSubtaskById(int id);
 
-    Task addTask(Task task) ;
+    Task addTask(Task task);
 
     Epic addEpic(Epic epic);
 
-    Subtask addSubtask(Subtask subtask) ;
+    Subtask addSubtask(Subtask subtask);
 
     Epic updateEpic(Epic epic);
 
-    Task updateTask(Task task) ;
+    Task updateTask(Task task);
 
-    Subtask updateSubtask(Subtask subtask) ;
+    Subtask updateSubtask(Subtask subtask);
 
     Task deleteTaskByID(int id);
 
