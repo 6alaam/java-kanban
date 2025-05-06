@@ -4,7 +4,6 @@ package test.service;
 import model.Task;
 import org.junit.jupiter.api.Test;
 import service.FileBackedTaskManager;
-import service.TaskIntersectionException;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileBackedTaskManagerTest {
     @Test
-    void shouldSaveTaskToFile() throws TaskIntersectionException {
+    void shouldSaveTaskToFile() {
         File file = new File("test-save.csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         Task task = new Task("Test", "Description");
