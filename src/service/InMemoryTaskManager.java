@@ -100,7 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task addTask(Task task) {
+    public Task addTask(Task task) throws TaskIntersectionException {
         task.setId(getNextId());
         tasks.put(task.getId(), task);
         return task;
@@ -114,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask addSubtask(Subtask subtask) {
+    public Subtask addSubtask(Subtask subtask) throws TaskIntersectionException {
         subtask.setId(getNextId());
         Epic epic = epics.get(subtask.getEpicID());
         epic.addSubtask(subtask);
@@ -131,13 +131,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task updateTask(Task task) {
+    public Task updateTask(Task task) throws TaskIntersectionException {
         tasks.put(task.getId(), task);
         return task;
     }
 
     @Override
-    public Subtask updateSubtask(Subtask subtask) {
+    public Subtask updateSubtask(Subtask subtask) throws TaskIntersectionException {
         Integer subtaskId = subtask.getId();
         Integer epicId = subtask.getEpicID();
         Subtask oldSubtask = subtasks.get(subtaskId);
@@ -209,6 +209,36 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.NEW);
         } else {
             epic.setStatus(Status.IN_PROGRESS);
+        }
+    }
+
+
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+    public boolean tasksIntersect(Task t1, Task t2) {
+        if (t1.getStartTime() == null || t1.getDuration() == null ||
+                t2.getStartTime() == null || t2.getDuration() == null) {
+            return false;
+        }
+        LocalDateTime start1 = t1.getStartTime();
+        LocalDateTime end1 = t1.getEndTime();
+        LocalDateTime start2 = t2.getStartTime();
+        LocalDateTime end2 = t2.getEndTime();
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
+
+
+    public void checkIntersection(Task task) throws TaskIntersectionException {
+        if (task.getStartTime() == null || task.getDuration() == null) {
+            return;
+        }
+        boolean intersect = getPrioritizedTasks().stream()
+                .filter(t -> t.getId() != task.getId())
+                .anyMatch(t -> tasksIntersect(task, t));
+        if (intersect) {
+            throw new TaskIntersectionException("Task time intersects with another task: " + task);
         }
     }
 }

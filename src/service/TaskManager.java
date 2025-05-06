@@ -27,17 +27,17 @@ public interface TaskManager {
 
     Subtask getSubtaskById(int id);
 
-    Task addTask(Task task);
+    Task addTask(Task task) throws TaskIntersectionException;
 
     Epic addEpic(Epic epic);
 
-    Subtask addSubtask(Subtask subtask);
+    Subtask addSubtask(Subtask subtask) throws TaskIntersectionException;
 
     Epic updateEpic(Epic epic);
 
-    Task updateTask(Task task);
+    Task updateTask(Task task) throws TaskIntersectionException;
 
-    Subtask updateSubtask(Subtask subtask);
+    Subtask updateSubtask(Subtask subtask) throws TaskIntersectionException;
 
     Task deleteTaskByID(int id);
 
