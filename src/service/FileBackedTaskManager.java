@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -55,8 +56,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             throw new ManagerLoadException("Ошибка загрузки задачи из файла", e);
-        } catch (TaskIntersectionException e) {
-            throw new ManagerLoadException("Ошибка пересечения задач при загрузке", e);
         }
         return manager;
     }
@@ -92,8 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
     @Override
-    public Task addTask(Task task) throws TaskIntersectionException {
-
+    public Task addTask(Task task) {
         save();
         return super.addTask(task);
 
@@ -106,7 +104,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Subtask addSubtask(Subtask subtask) throws TaskIntersectionException {
+    public Subtask addSubtask(Subtask subtask) {
         save();
         return super.addSubtask(subtask);
     }
@@ -118,13 +116,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task updateTask(Task task) throws TaskIntersectionException {
+    public Task updateTask(Task task) {
         save();
         return super.updateTask(task);
     }
 
     @Override
-    public Subtask updateSubtask(Subtask subtask) throws TaskIntersectionException {
+    public Subtask updateSubtask(Subtask subtask) {
         save();
         return super.updateSubtask(subtask);
     }
@@ -149,35 +147,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return super.getHistory();
     }
 
-    // Проверка пересечения двух задач (если у обеих заданы startTime и duration)
-    //перенесено в ин мемори таск менеджер
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
 
-//    public boolean tasksIntersect(Task t1, Task t2) {
-//        if (t1.getStartTime() == null || t1.getDuration() == null ||
-//                t2.getStartTime() == null || t2.getDuration() == null) {
-//            return false;
-//        }
-//        LocalDateTime start1 = t1.getStartTime();
-//        LocalDateTime end1 = t1.getEndTime();
-//        LocalDateTime start2 = t2.getStartTime();
-//        LocalDateTime end2 = t2.getEndTime();
-//        return start1.isBefore(end2) && start2.isBefore(end1);
-//    }
+    // Проверка пересечения двух задач (если у обеих заданы startTime и duration)
+    public boolean tasksIntersect(Task t1, Task t2) {
+        if (t1.getStartTime() == null || t1.getDuration() == null ||
+                t2.getStartTime() == null || t2.getDuration() == null) {
+            return false;
+        }
+        LocalDateTime start1 = t1.getStartTime();
+        LocalDateTime end1 = t1.getEndTime();
+        LocalDateTime start2 = t2.getStartTime();
+        LocalDateTime end2 = t2.getEndTime();
+        return start1.isBefore(end2) && start2.isBefore(end1);
+    }
 
 
     // При добавлении или обновлении проверяем, пересекается ли задача
-    // перенесено в инмемори таск менеджер
-//    public void checkIntersection(Task task) {
-//        if (task.getStartTime() == null || task.getDuration() == null) {
-//            return;
-//        }
-//        boolean intersect = getPrioritizedTasks().stream()
-//                .filter(t -> t.getId() != task.getId())
-//                .anyMatch(t -> tasksIntersect(task, t));
-//        if (intersect) {
-//            throw new RuntimeException("Task time intersects with another task: " + task);
-//        }
-//    }
+    public void checkIntersection(Task task) {
+        if (task.getStartTime() == null || task.getDuration() == null) {
+            return;
+        }
+        boolean intersect = getPrioritizedTasks().stream()
+                .filter(t -> t.getId() != task.getId())
+                .anyMatch(t -> tasksIntersect(task, t));
+        if (intersect) {
+            throw new RuntimeException("Task time intersects with another task: " + task);
+        }
+    }
 
 
     // Пересчёт статуса и временных полей эпика на основе его подзадач

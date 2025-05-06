@@ -17,7 +17,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void addNewTask() throws TaskIntersectionException {
+    void addNewTask() {
         //проверяем, что InMemoryTaskManager добавляет задачи и может найти их по id;
         final Task task = taskManager.addTask(new Task("Test addNewTask", "Test addNewTask description"));
         final Task savedTask = taskManager.getTaskById(task.getId());
@@ -31,7 +31,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    void addNewEpicAndSubtasks() throws TaskIntersectionException {
+    void addNewEpicAndSubtasks() {
         //проверяем, что InMemoryTaskManager добавляет эпики и подзадачи и может найти их по id;
         final Epic flatRenovation = taskManager.addEpic(new Epic("Сделать ремонт",
                 "Нужно успеть за отпуск"));
@@ -63,7 +63,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateTaskShouldReturnTaskWithTheSameId() throws TaskIntersectionException {
+    public void updateTaskShouldReturnTaskWithTheSameId() {
         final Task expected = new Task("имя", "описание");
         taskManager.addTask(expected);
         final Task updatedTask = new Task(expected.getId(), "новое имя", "новое описание", Status.DONE);
@@ -81,7 +81,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateSubtaskShouldReturnSubtaskWithTheSameId() throws TaskIntersectionException {
+    public void updateSubtaskShouldReturnSubtaskWithTheSameId() {
         final Epic epic = new Epic("имя", "описание");
         taskManager.addEpic(epic);
         final Subtask expected = new Subtask("имя", "описание", epic.getId());
@@ -93,7 +93,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteTasksShouldReturnEmptyList() throws TaskIntersectionException {
+    public void deleteTasksShouldReturnEmptyList() {
         taskManager.addTask(new Task("Купить книги", "Список в заметках"));
         taskManager.addTask(new Task("Помыть полы", "С новым средством"));
         taskManager.deleteAllTask();
@@ -110,7 +110,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteSubtasksShouldReturnEmptyList() throws TaskIntersectionException {
+    public void deleteSubtasksShouldReturnEmptyList() {
         Epic flatRenovation = new Epic("Сделать ремонт", "Нужно успеть за отпуск");
         taskManager.addEpic(flatRenovation);
         taskManager.addSubtask(new Subtask("Поклеить обои", "Обязательно светлые!",
@@ -126,7 +126,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteTaskByIdShouldReturnNullIfKeyIsMissing() throws TaskIntersectionException {
+    public void deleteTaskByIdShouldReturnNullIfKeyIsMissing() {
         taskManager.addTask(new Task(1, "Купить книги", "Список в заметках", Status.NEW));
         taskManager.addTask(new Task(2, "Помыть полы", "С новым средством", Status.DONE));
         assertNull(taskManager.deleteTaskByID(3));
@@ -140,7 +140,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void deleteSubtaskByIdShouldReturnNullIfKeyIsMissing() throws TaskIntersectionException {
+    public void deleteSubtaskByIdShouldReturnNullIfKeyIsMissing() {
         Epic flatRenovation = new Epic("Сделать ремонт", "Нужно успеть за отпуск");
         taskManager.addEpic(flatRenovation);
         taskManager.addSubtask(new Subtask("Поклеить обои", "Обязательно светлые!",
@@ -154,7 +154,7 @@ public class InMemoryTaskManagerTest {
 
 
     @Test
-    void taskCreatedAndTaskAddedShouldHaveSameVariables() throws TaskIntersectionException {
+    void taskCreatedAndTaskAddedShouldHaveSameVariables() {
         Task expected = new Task(1, "Помыть полы", "С новым средством", Status.DONE);
         taskManager.addTask(expected);
         List<Task> list = taskManager.getAllTasks();

@@ -20,6 +20,7 @@ public class InMemoryHistoryManagerTest {
         taskManager = Managers.getDefault();
     }
 
+
     @Test
     public void getHistoryShouldReturnOldTaskAfterUpdate() {
         Task washFloor = new Task("Написать проект", "Сдать в срок");
@@ -28,10 +29,11 @@ public class InMemoryHistoryManagerTest {
         taskManager.updateTask(new Task(washFloor.getId(), "Отправить на ревью",
                 "Переписать половину", Status.IN_PROGRESS));
         List<Task> tasks = taskManager.getHistory();
-        Task oldTask = tasks.get(0); // Изменено с getFirst() на get(0)
+        Task oldTask = tasks.getFirst();
         assertEquals(washFloor.getName(), oldTask.getName(), "В истории не сохранилась старая версия задачи");
         assertEquals(washFloor.getDescription(), oldTask.getDescription(),
                 "В истории не сохранилась старая версия задачи");
+
     }
 
     @Test
@@ -42,7 +44,7 @@ public class InMemoryHistoryManagerTest {
         taskManager.updateEpic(new Epic(flatRenovation.getId(), "Новое имя", "новое описание",
                 Status.IN_PROGRESS));
         List<Task> epics = taskManager.getHistory();
-        Epic oldEpic = (Epic) epics.get(0); // Изменено с getFirst() на get(0)
+        Epic oldEpic = (Epic) epics.getFirst();
         assertEquals(flatRenovation.getName(), oldEpic.getName(),
                 "В истории не сохранилась старая версия эпика");
         assertEquals(flatRenovation.getDescription(), oldEpic.getDescription(),
@@ -60,11 +62,11 @@ public class InMemoryHistoryManagerTest {
         taskManager.updateSubtask(new Subtask(flatRenovationSubtask3.getId(), "Новое имя",
                 "новое описание", Status.IN_PROGRESS, flatRenovation.getId()));
         List<Task> subtasks = taskManager.getHistory();
-        Subtask oldSubtask = (Subtask) subtasks.get(0); // Изменено с getFirst() на get(0)
+        Subtask oldSubtask = (Subtask) subtasks.getFirst();
         assertEquals(flatRenovationSubtask3.getName(), oldSubtask.getName(),
-                "В истории не сохранилась старая версия подзадачи");
+                "В истории не сохранилась старая версия эпика");
         assertEquals(flatRenovationSubtask3.getDescription(), oldSubtask.getDescription(),
-                "В истории не сохранилась старая версия подзадачи");
+                "В истории не сохранилась старая версия эпика");
     }
 
     @Test
@@ -88,7 +90,7 @@ public class InMemoryHistoryManagerTest {
         taskManager.getTaskById(washFloor.getId());
         taskManager.getTaskById(washFloor.getId());
         List<Task> task = taskManager.getHistory();
-        assertEquals(1, task.size(), "История должна содержать только одну задачу, так как задача дублируется");
+        assertEquals(1, task.size());
     }
 
     @Test
@@ -104,7 +106,7 @@ public class InMemoryHistoryManagerTest {
         taskManager.getEpicById(flatRenovation.getId());
         taskManager.deleteAllEpic();
         List<Task> task = taskManager.getHistory();
-        assertEquals(2, task.size(), "История должна содержать две задачи после удаления всех эпиков");
+        assertEquals(2, task.size());
     }
 
     @Test
@@ -117,15 +119,15 @@ public class InMemoryHistoryManagerTest {
         historyManager.remove(1); // Удаляем task1
 
         List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size(), "История должна содержать одну задачу после удаления task1");
-        assertFalse(history.contains(task1), "task1 должен быть удален из истории");
-        assertTrue(history.contains(task2), "task2 должен остаться в истории");
+        assertEquals(1, history.size());
+        assertFalse(history.contains(task1)); // task1 должен быть удален
+        assertTrue(history.contains(task2));
     }
 
     @Test
     void testGetHistoryEmpty() {
         List<Task> history = historyManager.getHistory();
-        assertTrue(history.isEmpty(), "История должна быть пустой");
+        assertTrue(history.isEmpty()); // История должна быть пустой
     }
 
     @Test
@@ -140,10 +142,10 @@ public class InMemoryHistoryManagerTest {
         historyManager.remove(2); // Удаляем task2
 
         List<Task> history = historyManager.getHistory();
-        assertEquals(2, history.size(), "История должна содержать две задачи после удаления task2");
-        assertTrue(history.contains(task1), "task1 должен остаться в истории");
-        assertTrue(history.contains(task3), "task3 должен остаться в истории");
-        assertFalse(history.contains(task2), "task2 должен быть удален из истории");
+        assertEquals(2, history.size());
+        assertTrue(history.contains(task1));
+        assertTrue(history.contains(task3));
+        assertFalse(history.contains(task2)); // task2 должен быть удален
     }
-}
 
+}
