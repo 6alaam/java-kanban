@@ -20,20 +20,22 @@ public class InMemoryHistoryManagerTest {
         taskManager = Managers.getDefault();
     }
 
-
     @Test
-    public void getHistoryShouldReturnOldTaskAfterUpdate() throws TaskIntersectionException {
-        Task washFloor = new Task("Написать проект", "Сдать в срок");
-        taskManager.addTask(washFloor);
-        taskManager.getTaskById(washFloor.getId());
-        taskManager.updateTask(new Task(washFloor.getId(), "Отправить на ревью",
-                "Переписать половину", Status.IN_PROGRESS));
-        List<Task> tasks = taskManager.getHistory();
-        Task oldTask = tasks.getFirst();
-        assertEquals(washFloor.getName(), oldTask.getName(), "В истории не сохранилась старая версия задачи");
-        assertEquals(washFloor.getDescription(), oldTask.getDescription(),
-                "В истории не сохранилась старая версия задачи");
-
+    public void getHistoryShouldReturnOldTaskAfterUpdate() {
+        try {
+            Task washFloor = new Task("Написать проект", "Сдать в срок");
+            taskManager.addTask(washFloor);
+            taskManager.getTaskById(washFloor.getId());
+            taskManager.updateTask(new Task(washFloor.getId(), "Отправить на ревью",
+                    "Переписать половину", Status.IN_PROGRESS));
+            List<Task> tasks = taskManager.getHistory();
+            Task oldTask = tasks.getFirst();
+            assertEquals(washFloor.getName(), oldTask.getName(), "В истории не сохранилась старая версия задачи");
+            assertEquals(washFloor.getDescription(), oldTask.getDescription(),
+                    "В истории не сохранилась старая версия задачи");
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
@@ -52,21 +54,25 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getHistoryShouldReturnOldSubtaskAfterUpdate() throws TaskIntersectionException {
-        Epic flatRenovation = new Epic("Новая задача", "Проверить");
-        taskManager.addEpic(flatRenovation);
-        Subtask flatRenovationSubtask3 = new Subtask("Заказать", "На озоне",
-                flatRenovation.getId());
-        taskManager.addSubtask(flatRenovationSubtask3);
-        taskManager.getSubtaskById(flatRenovationSubtask3.getId());
-        taskManager.updateSubtask(new Subtask(flatRenovationSubtask3.getId(), "Новое имя",
-                "новое описание", Status.IN_PROGRESS, flatRenovation.getId()));
-        List<Task> subtasks = taskManager.getHistory();
-        Subtask oldSubtask = (Subtask) subtasks.getFirst();
-        assertEquals(flatRenovationSubtask3.getName(), oldSubtask.getName(),
-                "В истории не сохранилась старая версия эпика");
-        assertEquals(flatRenovationSubtask3.getDescription(), oldSubtask.getDescription(),
-                "В истории не сохранилась старая версия эпика");
+    public void getHistoryShouldReturnOldSubtaskAfterUpdate() {
+        try {
+            Epic flatRenovation = new Epic("Новая задача", "Проверить");
+            taskManager.addEpic(flatRenovation);
+            Subtask flatRenovationSubtask3 = new Subtask("Заказать", "На озоне",
+                    flatRenovation.getId());
+            taskManager.addSubtask(flatRenovationSubtask3);
+            taskManager.getSubtaskById(flatRenovationSubtask3.getId());
+            taskManager.updateSubtask(new Subtask(flatRenovationSubtask3.getId(), "Новое имя",
+                    "новое описание", Status.IN_PROGRESS, flatRenovation.getId()));
+            List<Task> subtasks = taskManager.getHistory();
+            Subtask oldSubtask = (Subtask) subtasks.getFirst();
+            assertEquals(flatRenovationSubtask3.getName(), oldSubtask.getName(),
+                    "В истории не сохранилась старая версия подзадачи");
+            assertEquals(flatRenovationSubtask3.getDescription(), oldSubtask.getDescription(),
+                    "В истории не сохранилась старая версия подзадачи");
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
@@ -84,29 +90,37 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void testAddDuplicateTask() throws TaskIntersectionException {
-        Task washFloor = new Task("Написать проект", "Сдать в срок");
-        taskManager.addTask(washFloor);
-        taskManager.getTaskById(washFloor.getId());
-        taskManager.getTaskById(washFloor.getId());
-        List<Task> task = taskManager.getHistory();
-        assertEquals(1, task.size());
+    void testAddDuplicateTask() {
+        try {
+            Task washFloor = new Task("Написать проект", "Сдать в срок");
+            taskManager.addTask(washFloor);
+            taskManager.getTaskById(washFloor.getId());
+            taskManager.getTaskById(washFloor.getId());
+            List<Task> task = taskManager.getHistory();
+            assertEquals(1, task.size());
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
-    void testRemoveAllTask() throws TaskIntersectionException {
-        Task washFloor = new Task("Написать проект", "Сдать в срок");
-        Task goToTeach = new Task("пойти в школу", "Учить информатику");
-        Epic flatRenovation = new Epic("Новая задача", "Проверить");
-        taskManager.addTask(washFloor);
-        taskManager.addTask(goToTeach);
-        taskManager.addEpic(flatRenovation);
-        taskManager.getTaskById(washFloor.getId());
-        taskManager.getTaskById(goToTeach.getId());
-        taskManager.getEpicById(flatRenovation.getId());
-        taskManager.deleteAllEpic();
-        List<Task> task = taskManager.getHistory();
-        assertEquals(2, task.size());
+    void testRemoveAllTask() {
+        try {
+            Task washFloor = new Task("Написать проект", "Сдать в срок");
+            Task goToTeach = new Task("пойти в школу", "Учить информатику");
+            Epic flatRenovation = new Epic("Новая задача", "Проверить");
+            taskManager.addTask(washFloor);
+            taskManager.addTask(goToTeach);
+            taskManager.addEpic(flatRenovation);
+            taskManager.getTaskById(washFloor.getId());
+            taskManager.getTaskById(goToTeach.getId());
+            taskManager.getEpicById(flatRenovation.getId());
+            taskManager.deleteAllEpic();
+            List<Task> task = taskManager.getHistory();
+            assertEquals(2, task.size());
+        } catch (TaskIntersectionException e) {
+            fail("Не должно было быть пересечения задач", e);
+        }
     }
 
     @Test
@@ -147,5 +161,4 @@ public class InMemoryHistoryManagerTest {
         assertTrue(history.contains(task3));
         assertFalse(history.contains(task2)); // task2 должен быть удален
     }
-
 }
