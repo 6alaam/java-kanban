@@ -1,6 +1,7 @@
 package server;
 
 
+import adapters.DurationAdapter;
 import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +11,7 @@ import service.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -28,6 +30,7 @@ public class HttpTaskServer {
             .serializeNulls()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter()) // Добавьте эту строку
             .create();
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
