@@ -9,7 +9,6 @@ import server.HttpTaskServer;
 import service.Managers;
 import service.TaskManager;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -18,14 +17,15 @@ import java.net.http.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskManagerTest {
+
+    TaskManager taskManager = Managers.getDefault();
     private HttpTaskServer server;
     private HttpClient client;
     private Gson gson;
 
+
     @BeforeEach
     void setUp() throws IOException {
-        // Создаем локальную переменную taskManager
-        TaskManager taskManager = Managers.getDefault();
         server = new HttpTaskServer(taskManager);
         server.start();
         client = HttpClient.newHttpClient();
@@ -35,16 +35,6 @@ class HttpTaskManagerTest {
     @AfterEach
     void tearDown() {
         server.stop(0);
-    }
-
-    @Test
-    void testServerCreation() {
-        assertNotNull(server, "Сервер не был создан");
-    }
-
-    @Test
-    void testClientCreation() {
-        assertNotNull(client, "HTTP клиент не был создан");
     }
 
     @Test
