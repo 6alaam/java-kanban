@@ -1,22 +1,18 @@
-package Server;
-
-
+package server;
 
 import com.sun.net.httpserver.HttpExchange;
-
-import model.Subtask;
-import service.TaskManager;
+import model.Task;
+import model.TaskType;
 import service.*;
-
 import java.io.IOException;
 
 /**
- * Обработчик запросов subtasks
+ * Обработчик http запросов tasks
  */
 
-public class SubtasksHandler extends BaseHttpHandler {
+public class TasksHandler extends BaseHttpHandler {
 
-    protected SubtasksHandler(TaskManager taskManager) {
+    protected TasksHandler(TaskManager taskManager) {
         super(taskManager);
     }
 
@@ -26,25 +22,20 @@ public class SubtasksHandler extends BaseHttpHandler {
 
         switch (method) {
             case "POST":
-                System.out.println("POST subtasks");
-                Subtask subtask = gson.fromJson(body, Subtask.class);
-                int epicId = subtask.getEpicId();
+                System.out.println("POST tasks");
+                Task task = gson.fromJson(body, Task.class);
                 if (idString.isEmpty()) {
                     try {
-                        subtask = taskManager.createNewSubtask(subtask);
-                        response = "Новая задача " + subtask.getType() + " с id = " + subtask.getId() + " создана";
+                        task = taskManager.addTask(task);
+                        response = "Новая задача " +  " с id = " + task.getId() + " создана";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
-                    } catch (TaskNotFoundException e) {
-                        System.out.println(e.getMessage());
-                        sendNotFound(exc, epicId);
                     }
-                    sendText(exc, response, 201);
                 } else {
-                    subtask.setId(idInt);
+                    task.setId(idInt);
                     try {
-                        taskManager.updateSubTask(subtask);
-                        response = "Задача " + subtask.getType() + " с id = " + idInt + " обновлена";
+                        taskManager.updateTask(task);
+                        response = "Задача " + " с id = " + idInt + " обновлена";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
                     } catch (TaskNotFoundException e) {
@@ -54,12 +45,12 @@ public class SubtasksHandler extends BaseHttpHandler {
                 sendText(exc, response, 201);
                 break;
             case "GET":
-                System.out.println("GET subtasks");
+                System.out.println("GET tasks");
                 if (idString.isEmpty()) {
-                    response = gson.toJson(taskManager.getAllSubtasks());
+                    response = gson.toJson(taskManager.getAllTasks());
                 } else {
                     try {
-                        response = gson.toJson(taskManager.getSubtaskById(idInt));
+                        response = gson.toJson(taskManager.getTaskById(idInt));
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }
@@ -67,14 +58,14 @@ public class SubtasksHandler extends BaseHttpHandler {
                 sendText(exc, response, 200);
                 break;
             case "DELETE":
-                System.out.println("DELETE subtasks");
+                System.out.println("DELETE tasks");
                 if (idString.isEmpty() || idInt == 0) {
                     response = "Ошибка в запросе - укажите id задачи в числовом виде";
                     sendText(exc, response, 400);
                 } else {
                     try {
-                        taskManager.deleteSubtask(idInt);
-                        response = "Задача " + TaskType.SUBTASK + " с id = " + idInt + " удалена";
+                        taskManager.deleteTaskByID(idInt);
+                        response = "Задача " + TaskType.TASK + " с id = " + idInt + " удалена";
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }
@@ -82,7 +73,7 @@ public class SubtasksHandler extends BaseHttpHandler {
                 }
                 break;
             default:
-                response = "Метод не разрешен! Доступные методы для subtasks: GET, POST, DELETE.";
+                response = "Метод не разрешен! Доступные методы для tasks: GET, POST, DELETE.";
                 sendText(exc, response, 405);
         }
     }
