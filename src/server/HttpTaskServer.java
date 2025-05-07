@@ -28,9 +28,11 @@ public class HttpTaskServer {
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter()) // Добавьте эту строку
             .create();
+    private static int port;
 
-    public HttpTaskServer(TaskManager taskManager, Gson gson) throws IOException {
-        HttpTaskServer.gson = gson;
+    public HttpTaskServer(TaskManager taskManager, Gson gson, int port) throws IOException {
+        this.gson = gson;
+        server = HttpServer.create(new InetSocketAddress(port), 0);
 
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", new TasksHandler(taskManager, gson));
@@ -60,7 +62,11 @@ public class HttpTaskServer {
 
     public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
-        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager, gson);
+        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager, gson,port);
         httpTaskServer.start();
+    }
+
+    public String getBaseUrl() {
+        return "http://localhost:" + server.getAddress().getPort();
     }
 }
