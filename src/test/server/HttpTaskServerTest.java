@@ -43,32 +43,6 @@ public class HttpTaskServerTest {
         server.stop();
     }
 
-    HttpResponse<String> httpMethodPOST(String endpoint, String jsonTask) throws IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
-        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(jsonTask)).build();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return response;
-    }
-
-    HttpResponse<String> httpMethodGET(String endpoint) throws IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
-        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri)
-                .GET().build();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return response;
-    }
-
-    HttpResponse<String> httpMethodDELETE(String endpoint) throws IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
-        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri)
-                .DELETE().build();
-        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return response;
-    }
 
     @Test
     void createTaskTest() throws IOException, InterruptedException {
@@ -204,18 +178,6 @@ public class HttpTaskServerTest {
         assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
     }
 
-//    @Test
-//    void getAllEpicsTest() throws IOException, InterruptedException {
-//        Epic epic = new Epic("Epic1", "Epic1");
-//        manager.addEpic(epic);
-//        String jsonTask = gson.toJson(manager.getAllEpic());
-//        endpoint = "/epics";
-//
-//        HttpResponse<String> response = httpMethodGET(endpoint);
-//        assertEquals(200, response.statusCode());
-//        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
-//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
-//    }
 
     @Test
     void getSubtaskInEpicsTest() throws IOException, InterruptedException {
@@ -245,19 +207,6 @@ public class HttpTaskServerTest {
         assertEquals(1, manager.getHistory().size(), "Неверное количество задач");
         assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
     }
-
-//    @Test
-//    void getPrioritizedTest() throws IOException, InterruptedException {
-//        Task task = new Task("Task1", "Task1", "11.03.2024 10:20", 10L);
-//        manager.addTask(task);
-//        String jsonTask = gson.toJson(manager.getPrioritizedTasks());
-//        endpoint = "/prioritized";
-//
-//        HttpResponse<String> response = httpMethodGET(endpoint);
-//        assertEquals(200, response.statusCode());
-//        assertEquals(1, manager.getPrioritizedTasks().size(), "Неверное количество задач");
-//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
-//    }
 
 
     @Test
@@ -311,6 +260,59 @@ public class HttpTaskServerTest {
         assertEquals(406, response.statusCode());
         assertEquals(1, manager.getAllTasks().size(), "Количество задач не совпадает");
     }
+
+
+    HttpResponse<String> httpMethodPOST(String endpoint, String jsonTask) throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri).POST(HttpRequest.BodyPublishers.ofString(jsonTask)).build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return response;
+    }
+
+    HttpResponse<String> httpMethodGET(String endpoint) throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri).GET().build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return response;
+    }
+
+    HttpResponse<String> httpMethodDELETE(String endpoint) throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        URI uri = URI.create("http://localhost:" + HttpTaskServer.PORT + endpoint);
+        HttpRequest httpRequest = HttpRequest.newBuilder().uri(uri).DELETE().build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return response;
+    }
+
+
+    //    @Test
+//    void getAllEpicsTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        String jsonTask = gson.toJson(manager.getAllEpic());
+//        endpoint = "/epics";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(200, response.statusCode());
+//        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
+//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
+//    }
+
+    //    @Test
+//    void getPrioritizedTest() throws IOException, InterruptedException {
+//        Task task = new Task("Task1", "Task1", "11.03.2024 10:20", 10L);
+//        manager.addTask(task);
+//        String jsonTask = gson.toJson(manager.getPrioritizedTasks());
+//        endpoint = "/prioritized";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(200, response.statusCode());
+//        assertEquals(1, manager.getPrioritizedTasks().size(), "Неверное количество задач");
+//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
+//    }
+
 
 //    @Test
 //    void getNotExistentTaskTest() throws IOException, InterruptedException {
