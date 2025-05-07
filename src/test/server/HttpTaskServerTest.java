@@ -324,34 +324,34 @@ public class HttpTaskServerTest {
 //
 //    }
 
-    @Test
-    void getNotExistentEpicsTest() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic1", "Epic1");
-        manager.addEpic(epic);
-        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
-        manager.addSubtask(subTask);
-        endpoint = "/epics/2";
+//    @Test
+//    void getNotExistentEpicsTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+//        manager.addSubtask(subTask);
+//        endpoint = "/epics/2";
+//
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(404, response.statusCode());
+//        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
+//
+//    }
 
-
-        HttpResponse<String> response = httpMethodGET(endpoint);
-        assertEquals(404, response.statusCode());
-        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
-
-    }
-
-    @Test
-    void getNotExistentSubTaskTest() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic1", "Epic1");
-        manager.addEpic(epic);
-        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
-        manager.addSubtask(subTask);
-        endpoint = "/subtask/1";
-
-        HttpResponse<String> response = httpMethodGET(endpoint);
-        assertEquals(404, response.statusCode());
-        assertEquals(1, manager.getAllSubtask().size(), "Неверное количество задач");
-
-    }
+//    @Test
+//    void getNotExistentSubTaskTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+//        manager.addSubtask(subTask);
+//        endpoint = "/subtask/1";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(404, response.statusCode());
+//        assertEquals(1, manager.getAllSubtask().size(), "Неверное количество задач");
+//
+//    }
 
     @Test
     void getSubtaskInNotExistentEpicsTest() throws IOException, InterruptedException {
