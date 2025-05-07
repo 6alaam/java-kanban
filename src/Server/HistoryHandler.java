@@ -5,9 +5,7 @@ import service.TaskManager;
 
 import java.io.IOException;
 
-/**
- * Класс обрадотчика запросов history
- */
+
 
 public class HistoryHandler extends BaseHttpHandler {
 
