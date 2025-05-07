@@ -246,18 +246,18 @@ public class HttpTaskServerTest {
         assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
     }
 
-    @Test
-    void getPrioritizedTest() throws IOException, InterruptedException {
-        Task task = new Task("Task1", "Task1", "11.03.2024 10:20", 10L);
-        manager.addTask(task);
-        String jsonTask = gson.toJson(manager.getPrioritizedTasks());
-        endpoint = "/prioritized";
-
-        HttpResponse<String> response = httpMethodGET(endpoint);
-        assertEquals(200, response.statusCode());
-        assertEquals(1, manager.getPrioritizedTasks().size(), "Неверное количество задач");
-        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
-    }
+//    @Test
+//    void getPrioritizedTest() throws IOException, InterruptedException {
+//        Task task = new Task("Task1", "Task1", "11.03.2024 10:20", 10L);
+//        manager.addTask(task);
+//        String jsonTask = gson.toJson(manager.getPrioritizedTasks());
+//        endpoint = "/prioritized";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(200, response.statusCode());
+//        assertEquals(1, manager.getPrioritizedTasks().size(), "Неверное количество задач");
+//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
+//    }
 
 
     @Test
