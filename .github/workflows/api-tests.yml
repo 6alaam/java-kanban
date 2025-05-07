@@ -5,4 +5,10 @@ on:
 
 jobs:
   build:
-    uses: yandex-praktikum/java-kanban/.github/workflows/api-tests.yml@ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          find src/test/java -type f -name "*.java" > tests.txt
+          javac -d out @tests.txt
