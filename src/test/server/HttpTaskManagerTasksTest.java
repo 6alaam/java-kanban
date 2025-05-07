@@ -279,6 +279,7 @@ public class HttpTaskManagerTasksTest {
             assertEquals(200, response.statusCode());
             class TasksListTypeToken extends TypeToken<List<Task>> {
             }
+
             List<Task> tasksFromJson = gson.fromJson(response.body(), new TasksListTypeToken().getType());
             Task task = tasksFromJson.getFirst();
 
@@ -356,6 +357,7 @@ public class HttpTaskManagerTasksTest {
             assertEquals(200, response.statusCode());
             class TasksListTypeToken extends TypeToken<List<Task>> {
             }
+
             List<Task> tasksFromJson = gson.fromJson(response.body(), new TasksListTypeToken().getType());
 
             //проверяем количество созданных задач (едонственная задача удалена, список пуст)
