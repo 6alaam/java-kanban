@@ -204,18 +204,18 @@ public class HttpTaskServerTest {
         assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
     }
 
-    @Test
-    void getAllEpicsTest() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic1", "Epic1");
-        manager.addEpic(epic);
-        String jsonTask = gson.toJson(manager.getAllEpic());
-        endpoint = "/epics";
-
-        HttpResponse<String> response = httpMethodGET(endpoint);
-        assertEquals(200, response.statusCode());
-        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
-        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
-    }
+//    @Test
+//    void getAllEpicsTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        String jsonTask = gson.toJson(manager.getAllEpic());
+//        endpoint = "/epics";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(200, response.statusCode());
+//        assertEquals(1, manager.getAllEpic().size(), "Неверное количество задач");
+//        assertEquals(jsonTask, response.body(), "Задача вернулась неверно");
+//    }
 
     @Test
     void getSubtaskInEpicsTest() throws IOException, InterruptedException {

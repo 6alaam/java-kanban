@@ -3,25 +3,30 @@ package adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Создаем адаптер формата даты и времени для gson-json
- */
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     @Override
-    public void write(JsonWriter out, LocalDateTime value) throws IOException {
-        out.value(value.format(formatter));
+    public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
+        if (localDateTime == null) {
+            jsonWriter.nullValue();
+        } else {
+            jsonWriter.value(localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        }
     }
 
     @Override
-    public LocalDateTime read(JsonReader in) throws IOException {
-        return LocalDateTime.parse(in.nextString(), formatter);
+    public LocalDateTime read(JsonReader jsonReader) throws IOException {
+        if (jsonReader.peek() == JsonToken.NULL) {
+            jsonReader.nextNull();
+            return null;
+        }
+        return LocalDateTime.parse(jsonReader.nextString(), DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
     }
 }
 
