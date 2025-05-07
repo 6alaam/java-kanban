@@ -15,19 +15,19 @@ public class Subtask extends Task {
         this.epicID = epicId;
     }
 
-    public  Subtask(String name, String description, int epicId, int id, Status status, String startTime, long duration) {
+    public Subtask(String name, String description, int epicId, int id, Status status, String startTime, long duration) {
         super(name, description, id, status, startTime, duration);
         this.epicID = epicId;
 
     }
+
     public Subtask(int id, String name, Status status, String details, int epicId) {
         super(id, name, status, details);
         this.epicID = epicId;
     }
 
-    public Subtask(int id,String name,String description,Status status,int epicID){
-        super(id,name,description,status);
-
+    public Subtask(int id, String name, String description, Status status, int epicID) {
+        super(id, name, description, status);
         this.epicID = epicID;
     }
 
@@ -35,8 +35,6 @@ public class Subtask extends Task {
     public int getEpicID() {
         return epicID;
     }
-
-
 
 
     @Override
