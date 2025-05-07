@@ -1,11 +1,10 @@
 package Server;
 
 
-
 import com.sun.net.httpserver.HttpExchange;
 import model.Epic;
 import service.TaskManager;
-import service.*;
+import service.TaskNotFoundException;
 
 import java.io.IOException;
 
@@ -25,13 +24,13 @@ public class EpicsHandler extends BaseHttpHandler {
                 System.out.println("POST epics");
                 Epic epic = gson.fromJson(body, Epic.class);
                 if (idString.isEmpty()) { //добавление нового Epic
-                    epic = taskManager.createNewEpic(epic);
-                    response = "Новая задача " + epic.getType() + " с id = " + epic.getId() + " создана";
+                    epic = taskManager.addEpic(epic);
+                    response = "Новая задача " + " с id = " + epic.getId() + " создана";
                 } else {
                     epic.setId(idInt);
                     try {
                         taskManager.updateEpic(epic); // обноеление Epic
-                        response = "Задача " + epic.getType() + " с id = " + idInt + " обновлена";
+                        response = "Задача " + " с id = " + idInt + " обновлена";
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }
@@ -41,7 +40,7 @@ public class EpicsHandler extends BaseHttpHandler {
             case "GET":
                 System.out.println("GET epics");
                 if (idString.isEmpty()) {
-                    response = gson.toJson(taskManager.getAllEpics());
+                    response = gson.toJson(taskManager.getAllEpic());
                 } else {
                     try {
                         response = gson.toJson(taskManager.getEpicById(idInt));
@@ -51,7 +50,7 @@ public class EpicsHandler extends BaseHttpHandler {
                 }
                 if (!subtasksString.isEmpty()) {
                     try {
-                        response = gson.toJson(taskManager.getEpicSubtasks(idInt));
+                        response = gson.toJson(taskManager.getSubtaskById(idInt));
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }
@@ -65,8 +64,8 @@ public class EpicsHandler extends BaseHttpHandler {
                     sendText(exc, response, 400);
                 } else {
                     try {
-                        taskManager.deleteEpic(idInt);
-                        response = "Задача " + TaskType.EPIC + " с id= " + idInt + " удалена";
+                        taskManager.deleteEpicByID(idInt);
+                        response = "Задача " + " с id= " + idInt + " удалена";
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }

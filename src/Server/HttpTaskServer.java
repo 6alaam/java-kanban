@@ -1,7 +1,6 @@
 package Server;
 
 
-
 import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

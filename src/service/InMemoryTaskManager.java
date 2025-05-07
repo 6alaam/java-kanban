@@ -190,6 +190,12 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+
     public void updateEpicStatus(Epic epic) {
         int allIsDone = 0;
         int allIsInNew = 0;

@@ -6,7 +6,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -147,9 +146,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return super.getHistory();
     }
 
-    public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(prioritizedTasks);
-    }
+
+//    public List<Task> getPrioritizedTasks() {
+//        return new ArrayList<>(prioritizedTasks);
+//    }
 
     // Проверка пересечения двух задач (если у обеих заданы startTime и duration)
     public boolean tasksIntersect(Task t1, Task t2) {

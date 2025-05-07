@@ -1,13 +1,9 @@
 package Server;
 
-package servers;
-
 import com.sun.net.httpserver.HttpExchange;
-
 import model.Task;
-import service.TaskManager;
+import model.TaskType;
 import service.*;
-
 import java.io.IOException;
 
 /**
@@ -30,8 +26,8 @@ public class TasksHandler extends BaseHttpHandler {
                 Task task = gson.fromJson(body, Task.class);
                 if (idString.isEmpty()) {
                     try {
-                        task = taskManager.createNewTask(task);
-                        response = "Новая задача " + task.getType() + " с id = " + task.getId() + " создана";
+                        task = taskManager.addTask(task);
+                        response = "Новая задача " +  " с id = " + task.getId() + " создана";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
                     }
@@ -39,7 +35,7 @@ public class TasksHandler extends BaseHttpHandler {
                     task.setId(idInt);
                     try {
                         taskManager.updateTask(task);
-                        response = "Задача " + task.getType() + " с id = " + idInt + " обновлена";
+                        response = "Задача " + " с id = " + idInt + " обновлена";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
                     } catch (TaskNotFoundException e) {
@@ -68,7 +64,7 @@ public class TasksHandler extends BaseHttpHandler {
                     sendText(exc, response, 400);
                 } else {
                     try {
-                        taskManager.deleteTaskById(idInt);
+                        taskManager.deleteTaskByID(idInt);
                         response = "Задача " + TaskType.TASK + " с id = " + idInt + " удалена";
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
