@@ -1,5 +1,6 @@
 package test.server;
 
+import org.junit.jupiter.api.Assertions;
 import server.HttpTaskServer;
 import com.google.gson.Gson;
 import model.Status;
@@ -105,46 +106,85 @@ public class HttpTaskManagerTasksTest {
         task1.setStartTime(LocalDateTime.of(2022, 12, 1, 10, 25, 0));
         String taskJson1 = gson.toJson(task1);
 
+        // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         try {
-            URI url = URI.create("http://localhost:8080/tasks");
+            URI url = URI.create("http://localhost:8080/tasks/");
+
+            // создаем успешный запрос для добавления первой задачи
             HttpRequest request = HttpRequest
                     .newBuilder()
                     .uri(url)
                     .POST(HttpRequest.BodyPublishers.ofString(taskJson1))
                     .build();
 
-            client.send(request, HttpResponse.BodyHandlers.ofString());
+            // Отправляем запрос и проверяем ответ
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(201, response.statusCode(), "Ошибка при добавлении первой задачи");
 
-            // Обновляем задачу
+            // создаём обновлённую задачу
             Task task1Updated = new Task();
             task1Updated.setName("task1_updated_name");
             task1Updated.setDescription("task1_updated_description");
-            task1Updated.setStatus(Status.IN_PROGRESS);
-            task1Updated.setDuration(Duration.ofMinutes(30));
-            task1Updated.setStartTime(LocalDateTime.of(2022, 12, 1, 11, 0, 0));
-            String taskJsonUpdated = gson.toJson(task1Updated);
+            task1Updated.setStatus(Status.NEW);
+            task1Updated.setDuration(Duration.ofMinutes(20));
+            task1Updated.setStartTime(LocalDateTime.of(2022, 12, 3, 10, 25, 0));
+            String taskJson3 = gson.toJson(task1Updated);
 
-            // Отправляем запрос на обновление существующей задачи
-            URI updateUrl = URI.create("http://localhost:8080/tasks/1");
-            HttpRequest updateRequest = HttpRequest
+            // создаём запрос на обновление задачи
+            url = URI.create("http://localhost:8080/tasks/1");
+            // используем PUT вместо POST
+            request = HttpRequest
                     .newBuilder()
-                    .uri(updateUrl)
-                    .PUT(HttpRequest.BodyPublishers.ofString(taskJsonUpdated))
+                    .uri(url)
+                    .PUT(HttpRequest.BodyPublishers.ofString(taskJson3)) // Измените на PUT
                     .build();
 
-            HttpResponse<String> updateResponse = client.send(updateRequest, HttpResponse.BodyHandlers.ofString());
-            assertEquals(200, updateResponse.statusCode());
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // проверяем код ответа
+            assertEquals(200, response.statusCode(), "Ошибка при обновлении задачи");
 
-            // Проверяем, что задача была обновлена
+            // создаем задачу, которая не будет записана из-за пересечения
+            Task task1NotUpdated = new Task();
+            task1NotUpdated.setName("task1_updated_name");
+            task1NotUpdated.setDescription("task1_updated_description");
+            task1NotUpdated.setStatus(Status.NEW);
+            task1NotUpdated.setDuration(Duration.ofMinutes(20));
+            task1NotUpdated.setStartTime(LocalDateTime.of(2022, 12, 1, 10, 25, 0)); // Пересекающее время
+            String taskJson4 = gson.toJson(task1NotUpdated);
+
+            // создаём запрос на обновление задачи
+            request = HttpRequest
+                    .newBuilder()
+                    .uri(url)
+                    .PUT(HttpRequest.BodyPublishers.ofString(taskJson4)) // Измените на PUT
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(406, response.statusCode(), "Ошибка при обновлении задачи с пересекающим временем");
+
+            // создаем запрос на обновление отсутствующей задачи
+            url = URI.create("http://localhost:8080/tasks/3");
+            request = HttpRequest
+                    .newBuilder()
+                    .uri(url)
+                    .PUT(HttpRequest.BodyPublishers.ofString(taskJson1))
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertEquals(404, response.statusCode(), "Ошибка при обновлении несуществующей задачи");
+
+            // проверяем, что сохранилась обновленная задача с корректным именем
             List<Task> tasksFromManager = taskManager.getAllTasks();
             assertNotNull(tasksFromManager, "Задачи не возвращаются");
+            // проверяем количество созданных задач
             assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
+            // проверяем обновление задачи
             assertEquals("task1_updated_name", tasksFromManager.get(0).getName(), "Некорректное имя задачи");
         } catch (InterruptedException e) {
-            System.out.println("Во время выполнения запроса возникла ошибка. Проверьте, пожалуйста, URL-адрес и повторите попытку");
+            Assertions.fail("Во время выполнения запроса возникла ошибка. Проверьте, пожалуйста, URL-адрес и повторите попытку", e);
         } catch (IllegalArgumentException e) {
-            System.out.println("Введённый вами адрес не соответствует формату URL. Попробуйте, пожалуйста, снова");
+            Assertions.fail("Введённый вами адрес не соответствует формату URL. Попробуйте, пожалуйста, снова", e);
         }
     }
 
