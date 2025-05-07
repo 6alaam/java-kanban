@@ -1,27 +1,48 @@
 package server;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import service.TaskManager;
+
+
 import java.io.IOException;
 
+public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
+    Gson gson;
+    TaskManager manager;
 
-public class HistoryHandler extends BaseHttpHandler {
+    public HistoryHandler(TaskManager manager) {
+        this.manager = manager;
+        gson = GsonBuilder.getGson();
 
-    protected HistoryHandler(TaskManager taskManager) {
-        super(taskManager);
     }
 
     @Override
-    public void handle(HttpExchange exc) throws IOException {
-        super.handle(exc);
+    public void handle(HttpExchange httpExchange) throws IOException {
+        try (httpExchange) {
+            String path = httpExchange.getRequestURI().getPath();
+            String command = getBaseHandler(path, httpExchange.getRequestMethod());
+            String response;
 
-        if (method.equals("GET")) {
-            System.out.println("GET history");
-            response = gson.toJson(historyManager.getHistory());
-            sendText(exc, response, 200);
-        } else {
-            response = "Метод не разрешен! Доступный метод для history: GET.";
-            sendText(exc, response, 405);
+
+            switch (command) {
+                case "get_history":
+                    if (manager.getHistory().isEmpty()) {
+                        sendNotFound(httpExchange, "История пуста");
+                    } else {
+                        response = gson.toJson(manager.getHistory());
+                        sendText(httpExchange, response);
+                    }
+                    break;
+                default:
+                    sendBadRequest(httpExchange, "Некорректный запрос");
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(String.format("Возникла ошибка", e.getMessage()));
         }
     }
+
 }

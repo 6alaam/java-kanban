@@ -3,6 +3,8 @@ package model;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
 public class Task {
 
@@ -11,22 +13,59 @@ public class Task {
     private String description;
     private int id;
     private Status status;
+    private TaskType type;
     private LocalDateTime startTime;
     private Duration duration;
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm");
 
-
-    public Task(int id, String name, String description, Status status) {
-        this.id = id;
+    public Task(String name, String description, String startTime, long duration) {
         this.name = name;
         this.description = description;
-        this.status = status;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = parseStartTime(startTime);
     }
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = Status.NEW;
+    }
+
+    public Task(String name, String description, int id, Status status, String startTime, long duration) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.startTime = parseStartTime(startTime);
+        this.duration = Duration.ofMinutes(duration);
+    }
+
+    public Task(int id, String name, Status status, String description) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+    }
+
+    public Task(String name, String description, int id) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+    }
+
+    public Task(String name, String description, int id, Status status) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+    }
+
+    public Task(int id,String name,String description,Status status){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+
+
+
     }
 
     public Task(int id) {
@@ -87,10 +126,18 @@ public class Task {
 
     public LocalDateTime getEndTime() {
         if (startTime != null && duration != null) {
-            return startTime.plus(duration);
+            LocalDateTime endTime = startTime.plus(duration);
+            return endTime;
+        } else {
+            return null;
         }
-        return null;
     }
+    public String getFormattedDuration() {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -103,7 +150,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(name, description, id, status, type, startTime, duration);
     }
 
     @Override
@@ -116,6 +163,29 @@ public class Task {
                 '}';
     }
 
-    public Task() {
+    private LocalDateTime parseStartTime(String startTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
+        try {
+            return LocalDateTime.parse(startTimeString, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Некорректный формат времени" + startTimeString, e);
+        }
+
     }
+
+    public String getStartTimeInString() {
+        return parseStartTimeBack(startTime);
+    }
+
+    private String parseStartTimeBack(LocalDateTime startTime) {
+        if (startTime != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            return startTime.format(formatter);
+        } else {
+            return null;
+        }
+    }
+
+
 }

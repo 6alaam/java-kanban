@@ -1,32 +1,47 @@
 package server;
 
-
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import service.TaskManager;
+
 
 import java.io.IOException;
 
-/**
- * Обработчик http запросов prioritized
- */
+public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
+    Gson gson;
+    TaskManager manager;
 
-public class PrioritizedHandler extends BaseHttpHandler {
+    public PrioritizedHandler(TaskManager manager) {
+        this.manager = manager;
+        gson = GsonBuilder.getGson();
 
-    protected PrioritizedHandler(TaskManager taskManager) {
-        super(taskManager);
     }
 
     @Override
-    public void handle(HttpExchange exc) throws IOException {
-        super.handle(exc);
+    public void handle(HttpExchange httpExchange) throws IOException {
+        try (httpExchange) {
+            String path = httpExchange.getRequestURI().getPath();
+            String command = getBaseHandler(path, httpExchange.getRequestMethod());
+            String response;
 
-        if (method.equals("GET")) {
-            System.out.println("GET prioritized");
-            response = gson.toJson(taskManager.getPrioritizedTasks());
-            sendText(exc, response, 200);
-        } else {
-            response = "Метод не разрешен! Доступный метод для prioritized: GET.";
-            sendText(exc, response, 405);
+            switch (command) {
+                case "get_prioritized":
+                    if (manager.getPrioritizedTasks().isEmpty()) {
+                        sendNotFound(httpExchange, "Список пуст");
+                    } else {
+                        response = gson.toJson(manager.getPrioritizedTasks());
+                        sendText(httpExchange, response);
+                    }
+                    break;
+                default:
+                    sendBadRequest(httpExchange, "Некорректный запрос");
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(String.format("Возникла ошибка", e.getMessage()));
         }
     }
+
 }

@@ -1,72 +1,55 @@
 package server;
 
-
-import adapters.DurationAdapter;
-import adapters.LocalDateTimeAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
+import model.Epic;
+import model.Subtask;
+import model.Task;
 import service.Managers;
 import service.TaskManager;
 
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.LocalDateTime;
-
-
 
 public class HttpTaskServer {
-
-    private static final int PORT = 8080;
-    private static HttpServer server;
-
-    // содаем gson
-    protected static Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter()) // Добавьте эту строку
-            .create();
-    private static int port;
-
-    public HttpTaskServer(TaskManager taskManager, Gson gson, int port) throws IOException {
-        this.gson = gson;
-        server = HttpServer.create(new InetSocketAddress(port), 0);
-
-        server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks", new TasksHandler(taskManager, gson));
-        server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks", new TasksHandler(taskManager, gson));
-        server.createContext("/epics", new EpicsHandler(taskManager));
-        server.createContext("/subtasks", new SubtasksHandler(taskManager));
-        server.createContext("/history", new HistoryHandler(taskManager));
-        server.createContext("/prioritized", new PrioritizedHandler(taskManager));
-    }
+    public static final int PORT = 8080;
+    private TaskManager manager;
+    private HttpServer server;
 
 
+    public HttpTaskServer(TaskManager manager) throws IOException {
+        this.manager = manager;
+        server = HttpServer.create(new InetSocketAddress("localHost", PORT), 0);
+        server.createContext("/tasks", new TaskHandler(manager));
+        server.createContext("/subtasks", new SubTaskHandler(manager));
+        server.createContext("/epics", new EpicHandler(manager));
+        server.createContext("/history", new HistoryHandler(manager));
+        server.createContext("/prioritized", new PrioritizedHandler(manager));
 
-    public void start() {
-        server.start();
-        System.out.println("HTTP-сервер запущен на " + PORT + " порту");
-    }
-
-    public void stop(int delay) {
-        server.stop(delay);
-        System.out.println("HTTP-сервер остановлен");
-    }
-
-    public static Gson getGson() {
-        return gson;
     }
 
     public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
-        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager, gson,port);
-        httpTaskServer.start();
+        final HttpTaskServer taskServer = new HttpTaskServer(taskManager);
+
+        Task task = new Task("Task1", "Task1", "11.03.2024 10:20", 10L);
+        taskManager.addTask(task);
+        Epic epic = new Epic("Epic1", "Epic1");
+        taskManager.addEpic(epic);
+        Subtask subTask1 = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+        taskManager.addSubtask(subTask1);
+        taskServer.start();
+
     }
 
-    public String getBaseUrl() {
-        return "http://localhost:" + server.getAddress().getPort();
+    public void start() {
+        System.out.println("Веб-сервер менеджера задач начал работу на порту " + PORT);
+        this.server.start();
     }
+
+    public void stop() {
+        System.out.println("Веб-сервер менеджера задач закончил работу на порту " + PORT);
+        this.server.stop(0);
+    }
+
 }

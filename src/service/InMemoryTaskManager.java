@@ -16,6 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
     InMemoryHistoryManager historyManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
 
+    protected static TreeMap<LocalDateTime, Object> taskTreeMap = new TreeMap<>(new StartTimeComparator());
     private int nextId = 1;
 
     protected final SortedSet<Task> prioritizedTasks = new TreeSet<>(
@@ -193,6 +194,46 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
+    }
+
+    public Boolean timeMatchCheck(Task task) {
+
+        if (task != null) {
+            if (task.getStartTime() != null && task.getDuration() != null) {
+                LocalDateTime startTime = task.getStartTime();
+                LocalDateTime endTime = task.getEndTime();
+                Boolean isFloorkey;
+                Boolean isCeilingkey;
+                if (taskTreeMap.floorKey(startTime) == null) {
+                    isFloorkey = true;
+                } else {
+                    Task task2 = (Task) taskTreeMap.get(taskTreeMap.floorKey(startTime));
+                    if (startTime.isAfter(task2.getEndTime())) {
+                        isFloorkey = true;
+                    } else {
+                        isFloorkey = false;
+                    }
+                }
+                if (taskTreeMap.ceilingKey(endTime) == null) {
+                    isCeilingkey = true;
+                } else if (endTime.isBefore(taskTreeMap.ceilingKey(endTime))) {
+                    isCeilingkey = true;
+                } else {
+                    isCeilingkey = false;
+                }
+                if (isCeilingkey && isFloorkey) {
+                    taskTreeMap.put(task.getStartTime(), task);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
     }
 
 
