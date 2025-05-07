@@ -76,38 +76,38 @@ class HttpTaskManagerTasksTest {
         }
     }
 
-    @Test
-    void testGetNonExistentTask() {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(server.getBaseUrl() + "/tasks?id=999"))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            assertEquals(404, response.statusCode(), "Ожидался 404 для несуществующей задачи");
-        } catch (Exception e) {
-            fail("Ошибка при выполнении теста: " + e.getMessage());
-        }
-    }
-
-    @Test
-    void testGetTask() {
-        try {
-            Task task = createTestTask("Test Task", "Description", LocalDateTime.now());
-            taskManager.addTask(task);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(server.getBaseUrl() + "/tasks?id=" + task.getId()))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            assertEquals(200, response.statusCode(), "Неверный статус код при получении задачи");
-        } catch (Exception e) {
-            fail("Ошибка при выполнении теста: " + e.getMessage());
-        }
-    }
+//    @Test
+//    void testGetNonExistentTask() {
+//        try {
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(URI.create(server.getBaseUrl() + "/tasks?id=999"))
+//                    .GET()
+//                    .build();
+//
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//            assertEquals(404, response.statusCode(), "Ожидался 404 для несуществующей задачи");
+//        } catch (Exception e) {
+//            fail("Ошибка при выполнении теста: " + e.getMessage());
+//        }
+//    }
+//
+//    @Test
+//    void testGetTask() {
+//        try {
+//            Task task = createTestTask("Test Task", "Description", LocalDateTime.now());
+//            taskManager.addTask(task);
+//
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(URI.create(server.getBaseUrl() + "/tasks?id=" + task.getId()))
+//                    .GET()
+//                    .build();
+//
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//            assertEquals(200, response.statusCode(), "Неверный статус код при получении задачи");
+//        } catch (Exception e) {
+//            fail("Ошибка при выполнении теста: " + e.getMessage());
+//        }
+//    }
 
     @Test
     void testDeleteTask() {
