@@ -1,18 +1,13 @@
-
-package manager;
+package test.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import enums.Status;
-import task.Task;
-import task.Subtask;
-import task.Epic;
-
+import static org.junit.jupiter.api.Assertions.*;
+import model.*;
+import service.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class InMemoryTaskManagerTest {
+public class InMemoryTaskManagerTest {
 
     private static TaskManager taskManager;
 
@@ -25,11 +20,11 @@ class InMemoryTaskManagerTest {
     void addNewTask() {
         //проверяем, что InMemoryTaskManager добавляет задачи и может найти их по id;
         final Task task = taskManager.addTask(new Task("Test addNewTask", "Test addNewTask description"));
-        final Task savedTask = taskManager.getTaskByID(task.getId());
+        final Task savedTask = taskManager.getTaskById(task.getId());
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task, savedTask, "Задачи не совпадают.");
 
-        final List<Task> tasks = taskManager.getTasks();
+        final List<Task> tasks = taskManager.getAllTasks();
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
@@ -46,22 +41,22 @@ class InMemoryTaskManagerTest {
                 "Старую продать на Авито", flatRenovation.getId()));
         final Subtask flatRenovationSubtask3 = taskManager.addSubtask(new Subtask("Заказать книжный шкаф", "Из темного дерева",
                 flatRenovation.getId()));
-        final Epic savedEpic = taskManager.getEpicByID(flatRenovation.getId());
-        final Subtask savedSubtask1 = taskManager.getSubtaskByID(flatRenovationSubtask1.getId());
-        final Subtask savedSubtask2 = taskManager.getSubtaskByID(flatRenovationSubtask2.getId());
-        final Subtask savedSubtask3 = taskManager.getSubtaskByID(flatRenovationSubtask3.getId());
+        final Epic savedEpic = taskManager.getEpicById(flatRenovation.getId());
+        final Subtask savedSubtask1 = taskManager.getSubtaskById(flatRenovationSubtask1.getId());
+        final Subtask savedSubtask2 = taskManager.getSubtaskById(flatRenovationSubtask2.getId());
+        final Subtask savedSubtask3 = taskManager.getSubtaskById(flatRenovationSubtask3.getId());
         assertNotNull(savedEpic, "Эпик не найден.");
         assertNotNull(savedSubtask2, "Подзадача не найдена.");
         assertEquals(flatRenovation, savedEpic, "Эпики не совпадают.");
         assertEquals(flatRenovationSubtask1, savedSubtask1, "Подзадачи не совпадают.");
         assertEquals(flatRenovationSubtask3, savedSubtask3, "Подзадачи не совпадают.");
 
-        final List<Epic> epics = taskManager.getEpics();
+        final List<Epic> epics = taskManager.getAllEpic();
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(flatRenovation, epics.getFirst(), "Эпики не совпадают.");
 
-        final List<Subtask> subtasks = taskManager.getSubtasks();
+        final List<Subtask> subtasks = taskManager.getAllSubtask();
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(3, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(savedSubtask1, subtasks.getFirst(), "Подзадачи не совпадают.");
@@ -101,16 +96,16 @@ class InMemoryTaskManagerTest {
     public void deleteTasksShouldReturnEmptyList() {
         taskManager.addTask(new Task("Купить книги", "Список в заметках"));
         taskManager.addTask(new Task("Помыть полы", "С новым средством"));
-        taskManager.deleteTasks();
-        List<Task> tasks = taskManager.getTasks();
+        taskManager.deleteAllTask();
+        List<Task> tasks = taskManager.getAllTasks();
         assertTrue(tasks.isEmpty(), "После удаления задач список должен быть пуст.");
     }
 
     @Test
     public void deleteEpicsShouldReturnEmptyList() {
         taskManager.addEpic(new Epic("Сделать ремонт", "Нужно успеть за отпуск"));
-        taskManager.deleteEpics();
-        List<Epic> epics = taskManager.getEpics();
+        taskManager.deleteAllEpic();
+        List<Epic> epics = taskManager.getAllEpic();
         assertTrue(epics.isEmpty(), "После удаления эпиков список должен быть пуст.");
     }
 
@@ -125,8 +120,8 @@ class InMemoryTaskManagerTest {
         taskManager.addSubtask(new Subtask("Заказать книжный шкаф", "Из темного дерева",
                 flatRenovation.getId()));
 
-        taskManager.deleteSubtasks();
-        List<Subtask> subtasks = taskManager.getSubtasks();
+        taskManager.deleteAllSubtask();
+        List<Subtask> subtasks = taskManager.getAllSubtask();
         assertTrue(subtasks.isEmpty(), "После удаления подзадач список должен быть пуст.");
     }
 
@@ -159,15 +154,14 @@ class InMemoryTaskManagerTest {
 
 
     @Test
-    void TaskCreatedAndTaskAddedShouldHaveSameVariables() {
+    void taskCreatedAndTaskAddedShouldHaveSameVariables() {
         Task expected = new Task(1, "Помыть полы", "С новым средством", Status.DONE);
         taskManager.addTask(expected);
-        List<Task> list = taskManager.getTasks();
+        List<Task> list = taskManager.getAllTasks();
         Task actual = list.getFirst();
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
     }
-
 }
