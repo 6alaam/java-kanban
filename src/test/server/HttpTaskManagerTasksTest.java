@@ -2,7 +2,6 @@ package test.server;
 
 import server.HttpTaskServer;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import model.Status;
 import model.Task;
 import org.junit.jupiter.api.AfterEach;
@@ -148,9 +147,9 @@ public class HttpTaskManagerTasksTest {
             System.out.println("Введённый вами адрес не соответствует формату URL. Попробуйте, пожалуйста, снова");
         }
     }
+
     @Test
     public void testDeleteTask() throws IOException {
-        // создаём задачу
         Task task1 = new Task();
         task1.setName("task1_name");
         task1.setDescription("task1_description");
