@@ -14,11 +14,7 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-/**
- * Класс для сервера.
- * Хранит и инициализирует gson с нужным форматированием, предоставляет методы для запуска и остановки сервера,
- * связывает URL /tasks, /epics, /subtasks, /history, /prioritized с соответствующими обработчиками http запросов
- */
+
 
 public class HttpTaskServer {
 
@@ -41,6 +37,8 @@ public class HttpTaskServer {
         server.createContext("/history", new HistoryHandler(taskManager));
         server.createContext("/prioritized", new PrioritizedHandler(taskManager));
     }
+
+
 
     public void start() {
         server.start();

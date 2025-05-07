@@ -96,6 +96,7 @@ public class TasksHandler extends BaseHttpHandler {
         }
     }
 
+
     private void handleGetRequest(HttpExchange exchange, String idString, int idInt)
             throws IOException {
         if (idString.isEmpty()) {
@@ -145,6 +146,7 @@ public class TasksHandler extends BaseHttpHandler {
                 404,  // Тест ожидает 404 для не найденной задачи
                 "text/plain");
     }
+
 
     private void sendResponse(HttpExchange exchange, String response, int statusCode, String contentType)
             throws IOException {
