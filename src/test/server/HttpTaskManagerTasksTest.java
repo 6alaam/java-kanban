@@ -16,7 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 
-class HttpTaskManagerTest {
+class HttpTaskManagerTasksTest {
 
     TaskManager taskManager = Managers.getDefault();
     private HttpTaskServer server;
