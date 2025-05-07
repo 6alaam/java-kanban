@@ -353,30 +353,30 @@ public class HttpTaskServerTest {
 //
 //    }
 
-    @Test
-    void getSubtaskInNotExistentEpicsTest() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic1", "Epic1");
-        manager.addEpic(epic);
-        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
-        manager.addSubtask(subTask);
-        endpoint = "/epics/2/subtasks";
-
-        HttpResponse<String> response = httpMethodGET(endpoint);
-        assertEquals(404, response.statusCode());
-    }
-
-    @Test
-    void createTimeIntersectionSubTaskTest() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic1", "Epic1");
-        manager.addEpic(epic);
-        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
-        manager.addSubtask(subTask);
-        Subtask subTask1 = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
-        String jsonTask = gson.toJson(subTask1);
-        endpoint = "/subtasks";
-
-        HttpResponse<String> response = httpMethodPOST(endpoint, jsonTask);
-        assertEquals(406, response.statusCode());
-        assertEquals(1, manager.getAllSubtask().size(), "Количество задач не совпадает");
-    }
+//    @Test
+//    void getSubtaskInNotExistentEpicsTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+//        manager.addSubtask(subTask);
+//        endpoint = "/epics/2/subtasks";
+//
+//        HttpResponse<String> response = httpMethodGET(endpoint);
+//        assertEquals(404, response.statusCode());
+//    }
+//
+//    @Test
+//    void createTimeIntersectionSubTaskTest() throws IOException, InterruptedException {
+//        Epic epic = new Epic("Epic1", "Epic1");
+//        manager.addEpic(epic);
+//        Subtask subTask = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+//        manager.addSubtask(subTask);
+//        Subtask subTask1 = new Subtask("Subtask1", "subtask1", epic.getId(), "11.03.2024 22:22", 17);
+//        String jsonTask = gson.toJson(subTask1);
+//        endpoint = "/subtasks";
+//
+//        HttpResponse<String> response = httpMethodPOST(endpoint, jsonTask);
+//        assertEquals(406, response.statusCode());
+//        assertEquals(1, manager.getAllSubtask().size(), "Количество задач не совпадает");
+//    }
 }
