@@ -1,12 +1,11 @@
 package server;
 
 
-
 import com.sun.net.httpserver.HttpExchange;
-
 import model.Subtask;
 import service.TaskManager;
-import service.*;
+import service.TaskNotFoundException;
+import service.TimeCrossException;
 
 import java.io.IOException;
 
@@ -28,11 +27,11 @@ public class SubtasksHandler extends BaseHttpHandler {
             case "POST":
                 System.out.println("POST subtasks");
                 Subtask subtask = gson.fromJson(body, Subtask.class);
-                int epicId = subtask.getEpicId();
+                int epicId = subtask.getEpicID();
                 if (idString.isEmpty()) {
                     try {
-                        subtask = taskManager.createNewSubtask(subtask);
-                        response = "Новая задача " + subtask.getType() + " с id = " + subtask.getId() + " создана";
+                        subtask = taskManager.addSubtask(subtask);
+                        response = "Новая задача " + " с id = " + subtask.getId() + " создана";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
                     } catch (TaskNotFoundException e) {
@@ -43,8 +42,8 @@ public class SubtasksHandler extends BaseHttpHandler {
                 } else {
                     subtask.setId(idInt);
                     try {
-                        taskManager.updateSubTask(subtask);
-                        response = "Задача " + subtask.getType() + " с id = " + idInt + " обновлена";
+                        taskManager.updateSubtask(subtask);
+                        response = "Задача " + " с id = " + idInt + " обновлена";
                     } catch (TimeCrossException e) {
                         sendHasInteractions(exc);
                     } catch (TaskNotFoundException e) {
@@ -56,7 +55,7 @@ public class SubtasksHandler extends BaseHttpHandler {
             case "GET":
                 System.out.println("GET subtasks");
                 if (idString.isEmpty()) {
-                    response = gson.toJson(taskManager.getAllSubtasks());
+                    response = gson.toJson(taskManager.getAllSubtask());
                 } else {
                     try {
                         response = gson.toJson(taskManager.getSubtaskById(idInt));
@@ -73,8 +72,8 @@ public class SubtasksHandler extends BaseHttpHandler {
                     sendText(exc, response, 400);
                 } else {
                     try {
-                        taskManager.deleteSubtask(idInt);
-                        response = "Задача " + TaskType.SUBTASK + " с id = " + idInt + " удалена";
+                        taskManager.deleteSubtaskByID(idInt);
+                        response = "Задача " + " с id = " + idInt + " удалена";
                     } catch (TaskNotFoundException e) {
                         sendNotFound(exc, idInt);
                     }
