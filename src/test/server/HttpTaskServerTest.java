@@ -1,9 +1,7 @@
 package test.server;
 
 
-
 import com.google.gson.Gson;
-
 import model.Epic;
 import model.Status;
 import model.Subtask;
@@ -29,7 +27,6 @@ public class HttpTaskServerTest {
     private HttpTaskServer server;
     private TaskManager manager;
     private Gson gson = GsonBuilder.getGson();
-    ;
     String endpoint;
 
     @BeforeEach
