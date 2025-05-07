@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import model.Task;
@@ -12,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TasksHandler extends BaseHttpHandler {
 
-    protected TasksHandler(TaskManager taskManager) {
+    protected TasksHandler(TaskManager taskManager, Gson gson) {
         super(taskManager);
     }
 

@@ -22,16 +22,20 @@ public class HttpTaskServer {
     private static HttpServer server;
 
     // содаем gson
-    protected static final Gson gson = new GsonBuilder()
+    protected static Gson gson = new GsonBuilder()
             .serializeNulls()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter()) // Добавьте эту строку
             .create();
 
-    public HttpTaskServer(TaskManager taskManager) throws IOException {
+    public HttpTaskServer(TaskManager taskManager, Gson gson) throws IOException {
+        HttpTaskServer.gson = gson;
+
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks", new TasksHandler(taskManager));
+        server.createContext("/tasks", new TasksHandler(taskManager, gson));
+        server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        server.createContext("/tasks", new TasksHandler(taskManager, gson));
         server.createContext("/epics", new EpicsHandler(taskManager));
         server.createContext("/subtasks", new SubtasksHandler(taskManager));
         server.createContext("/history", new HistoryHandler(taskManager));
@@ -56,7 +60,7 @@ public class HttpTaskServer {
 
     public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
-        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager);
+        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManager, gson);
         httpTaskServer.start();
     }
 }

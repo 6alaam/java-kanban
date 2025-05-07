@@ -3,10 +3,7 @@ package adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import model.Task;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,25 +12,17 @@ import java.time.format.DateTimeFormatter;
  * Создаем адаптер формата даты и времени для gson-json
  */
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
-    private static final DateTimeFormatter dtf = Task.formatter;
-
+    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @Override
-    public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
-        if (localDateTime == null) { //реализовываем часть с null
-            jsonWriter.nullValue();
-        } else {
-            jsonWriter.value(localDateTime.format(dtf));
-        }
+    public void write(JsonWriter out, LocalDateTime value) throws IOException {
+        out.value(value.format(formatter));
     }
 
     @Override
-    public LocalDateTime read(final JsonReader jsonReader) throws IOException {
-        if (jsonReader.peek() == JsonToken.NULL) {
-            jsonReader.nextNull();
-            return null;
-        } else {
-            return LocalDateTime.parse(jsonReader.nextString(), dtf);
-        }
+    public LocalDateTime read(JsonReader in) throws IOException {
+        return LocalDateTime.parse(in.nextString(), formatter);
     }
 }
+
+

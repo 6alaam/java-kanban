@@ -1,6 +1,9 @@
 package test.server;
 
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import model.Status;
 import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +17,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskManagerTasksTest {
@@ -26,10 +32,14 @@ class HttpTaskManagerTasksTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        server = new HttpTaskServer(taskManager);
+        taskManager = Managers.getDefault();
+        // Создаем Gson с адаптером для LocalDateTime
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+        server = new HttpTaskServer(taskManager, gson); // Передаем наш Gson
         server.start();
         client = HttpClient.newHttpClient();
-        gson = new Gson();
     }
 
     @AfterEach
@@ -37,14 +47,22 @@ class HttpTaskManagerTasksTest {
         server.stop(0);
     }
 
+
+
     @Test
-    void testAddTask() throws Exception {
-        Task task = new Task("Test", "Description");
-        String json = gson.toJson(task);
+    void testAddTask() throws IOException, InterruptedException {
+        Task task = new Task();
+        task.setName("Test Task");
+        task.setDescription("Description");
+        task.setStatus(Status.NEW);
+        task.setDuration(Duration.ofMinutes(30));
+        task.setStartTime(LocalDateTime.now());
+
+        String taskJson = gson.toJson(task);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -53,57 +71,7 @@ class HttpTaskManagerTasksTest {
     }
 
     @Test
-    void testGetTask() throws Exception {
-        // Сначала создаем задачу
-        Task task = new Task("Test", "Description");
-        String json = gson.toJson(task);
-
-        HttpRequest postRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
-        Task createdTask = gson.fromJson(postResponse.body(), Task.class);
-
-        // Затем получаем ее
-        HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks?id=" + createdTask.getId()))
-                .GET()
-                .build();
-
-        HttpResponse<String> getResponse = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, getResponse.statusCode());
-    }
-
-    @Test
-    void testDeleteTask() throws Exception {
-        // Сначала создаем задачу
-        Task task = new Task("Test", "Description");
-        String json = gson.toJson(task);
-
-        HttpRequest postRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks"))
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
-        Task createdTask = gson.fromJson(postResponse.body(), Task.class);
-
-        // Затем удаляем ее
-        HttpRequest deleteRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks?id=" + createdTask.getId()))
-                .DELETE()
-                .build();
-
-        HttpResponse<String> deleteResponse = client.send(deleteRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, deleteResponse.statusCode());
-    }
-
-    @Test
-    void testGetNonExistentTask() throws Exception {
+    void testGetNonExistentTask() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks?id=999"))
                 .GET()
@@ -112,5 +80,41 @@ class HttpTaskManagerTasksTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void testGetTask() throws IOException, InterruptedException {
+        // Сначала создаем задачу
+        Task task = new Task();
+        task.setName("Test Task");
+        task.setDescription("Description");
+        taskManager.addTask(task);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks?id=" + task.getId()))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    void testDeleteTask() throws IOException, InterruptedException {
+        // Сначала создаем задачу
+        Task task = new Task();
+        task.setName("Test Task");
+        task.setDescription("Description");
+        taskManager.addTask(task);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks?id=" + task.getId()))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
     }
 }
